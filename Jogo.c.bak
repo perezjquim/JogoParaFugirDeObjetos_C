@@ -40,9 +40,9 @@ void varrerDisplay(void) interrupt 1
    DisplayY = VAZIO;			// Desliga todas as linhas de sa?da
    DisplayX = ImagemX[LinhaAtual];	// Mostra a linha
    DisplayY = ImagemY[LinhaAtual];	// Activa a linha
-   LinhaAtual++;			// Pr?xima linha
-   if (LinhaAtual == NR_LINHAS) 	// Verifica se ? a ?ltima linha
-   	 LinhaAtual = 0;		// Para a linha inicial
+   VLinha++;			// Pr?xima linha
+   if (VLinha == NR_LINHAS) 	// Verifica se ? a ?ltima linha
+   	VLinha = 0;		// Para a linha inicial
 }
 
 
