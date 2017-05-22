@@ -1,4 +1,3 @@
-".\Objects\Jogo.obj",
-".\Objects\testeX.obj" 
+".\Objects\Jogo.obj" 
 TO ".\Objects\Jogo" 
 PRINT(".\Listings\Jogo.m51")

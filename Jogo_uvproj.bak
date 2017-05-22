@@ -45,7 +45,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\Objects\</OutputDirectory>
-          <OutputName>testeX</OutputName>
+          <OutputName>Jogo</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>1</CreateHexFile>
@@ -367,16 +367,6 @@
               <FileName>Jogo.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\Jogo.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>Teste</GroupName>
-          <Files>
-            <File>
-              <FileName>testeX.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\testeX.c</FilePath>
             </File>
           </Files>
         </Group>
