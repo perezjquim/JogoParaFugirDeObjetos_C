@@ -1,0 +1,540 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        05/19/2017  15:20:11  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE .\Objects\Jogo.obj TO .\Objects\testeX PRINT (.\Listings\testeX.m51)
+
+
+MEMORY MODEL: SMALL WITH FLOATING POINT ARITHMETIC
+
+
+INPUT MODULES INCLUDED:
+  .\Objects\Jogo.obj (JOGO)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPADD)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPCMP)
+  C:\KEIL_V5\C51\LIB\C51FPS.LIB (?C?FPGETOPN)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\KEIL_V5\C51\LIB\C51S.LIB (?C?CLDOPTR)
+
+
+LINK MAP OF MODULE:  .\Objects\testeX (JOGO)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0008H     UNIT         ?DT?_DELAY?JOGO
+            DATA    0010H     0008H     UNIT         ?DT?JOGO
+            DATA    0018H     0006H     UNIT         _DATA_GROUP_
+            DATA    001EH     0005H     UNIT         ?DT?_DESENHARLINHA?JOGO
+            DATA    0023H     0004H     UNIT         ?DT?MOVEROBSTACULOS?JOGO
+            DATA    0027H     0002H     UNIT         ?DT?_MOVEROBSTACULO?JOGO
+            IDATA   0029H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+                    0003H     0008H                  *** GAP ***
+            CODE    000BH     0003H     ABSOLUTE     
+                    000EH     07F2H                  *** GAP ***
+            CODE    0800H     01E8H     UNIT         ?C?LIB_CODE
+            CODE    09E8H     00BAH     UNIT         ?PR?MOVEROBSTACULOS?JOGO
+            CODE    0AA2H     008AH     UNIT         ?PR?_ESTALIGADO?JOGO
+            CODE    0B2CH     0074H     UNIT         ?PR?TIMER0_ISR?JOGO
+            CODE    0BA0H     0067H     UNIT         ?PR?_APAGARPONTO?JOGO
+            CODE    0C07H     0060H     UNIT         ?PR?_DESENHARPONTO?JOGO
+            CODE    0C67H     0049H     UNIT         ?PR?_JOGAR?JOGO
+            CODE    0CB0H     0043H     UNIT         ?PR?_DELAY?JOGO
+            CODE    0CF3H     0041H     UNIT         ?PR?_DESENHARLINHA?JOGO
+            CODE    0D34H     0032H     UNIT         ?PR?MAIN?JOGO
+            CODE    0D66H     002DH     UNIT         ?PR?VERIFICARCONTROLOS?JOGO
+            CODE    0D93H     0026H     UNIT         ?PR?_MOVEROBSTACULO?JOGO
+            CODE    0DB9H     001EH     UNIT         ?CO?JOGO
+            CODE    0DD7H     001BH     UNIT         ?PR?LIMPARDISPLAY?JOGO
+            CODE    0DF2H     0018H     UNIT         ?PR?VERIFICARVIDASJOGADOR?JOGO
+            CODE    0E0AH     0012H     UNIT         ?PR?MOVERJOGADORESQUERDA?JOGO
+            CODE    0E1CH     0012H     UNIT         ?PR?MOVERJOGADORDIREITA?JOGO
+            CODE    0E2EH     000FH     UNIT         ?PR?LIGARINTERRUPCOES?JOGO
+            CODE    0E3DH     000CH     UNIT         ?C_C51STARTUP
+            CODE    0E49H     0009H     UNIT         ?PR?INICIALIZARJOGADOR?JOGO
+
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/19/2017  15:20:11  PAGE 2
+
+
+
+
+OVERLAY MAP OF MODULE:   .\Objects\testeX (JOGO)
+
+
+SEGMENT                                  DATA_GROUP 
+  +--> CALLED SEGMENT                  START    LENGTH
+------------------------------------------------------
+?PR?TIMER0_ISR?JOGO                    0018H    0002H
+  +--> ?PR?_ESTALIGADO?JOGO
+  +--> ?PR?_APAGARPONTO?JOGO
+  +--> ?PR?_DESENHARPONTO?JOGO
+
+*** NEW ROOT ***************************************************
+
+?C_C51STARTUP                          -----    -----
+  +--> ?PR?MAIN?JOGO
+
+?PR?MAIN?JOGO                          -----    -----
+  +--> ?PR?LIGARINTERRUPCOES?JOGO
+  +--> ?PR?_JOGAR?JOGO
+  +--> ?PR?LIMPARDISPLAY?JOGO
+
+?PR?_JOGAR?JOGO                        001AH    0004H
+  +--> ?PR?LIMPARDISPLAY?JOGO
+  +--> ?PR?_DESENHARPONTO?JOGO
+
+
+
+SYMBOL TABLE OF MODULE:  .\Objects\testeX (JOGO)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        JOGO
+  C:0000H         SYMBOL        _ICE_DUMMY_
+  D:0090H         PUBLIC        P1
+  D:00A0H         PUBLIC        P2
+  D:00B0H         PUBLIC        P3
+  C:0AA2H         PUBLIC        _estaLigado
+  C:0BA7H         PUBLIC        _apagarPonto
+  B:00A8H.7       PUBLIC        EA
+  C:0DF2H         PUBLIC        verificarVidasJogador
+  C:0D66H         PUBLIC        verificarControlos
+  C:0CB0H         PUBLIC        _delay
+  B:00B0H.0       PUBLIC        Input
+  C:0C6DH         PUBLIC        _jogar
+  D:0010H         PUBLIC        conjuntoObstaculosAtual
+  C:0E2EH         PUBLIC        ligarInterrupcoes
+  C:0B2CH         PUBLIC        timer0_ISR
+  C:0D34H         PUBLIC        main
+  D:0089H         PUBLIC        TMOD
+  C:0E0AH         PUBLIC        moverJogadorEsquerda
+  C:0E1CH         PUBLIC        moverJogadorDireita
+  C:0CF3H         PUBLIC        _desenharLinha
+  B:00B0H.2       PUBLIC        Esquerda
+  B:00A0H.4       PUBLIC        DisplayX_0
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/19/2017  15:20:11  PAGE 3
+
+
+  B:0090H.6       PUBLIC        DisplayY_0
+  B:00A0H.3       PUBLIC        DisplayX_1
+  B:0090H.5       PUBLIC        DisplayY_1
+  B:00A0H.2       PUBLIC        DisplayX_2
+  B:0090H.4       PUBLIC        DisplayY_2
+  B:00A0H.1       PUBLIC        DisplayX_3
+  B:00B0H.3       PUBLIC        Direita
+  B:0090H.3       PUBLIC        DisplayY_3
+  B:00A0H.0       PUBLIC        DisplayX_4
+  B:0090H.2       PUBLIC        DisplayY_4
+  B:0090H.1       PUBLIC        DisplayY_5
+  B:00A8H.1       PUBLIC        ET0
+  B:0090H.0       PUBLIC        DisplayY_6
+  D:008CH         PUBLIC        TH0
+  D:008AH         PUBLIC        TL0
+  C:09E8H         PUBLIC        moverObstaculos
+  B:0088H.4       PUBLIC        TR0
+  D:0012H         PUBLIC        vidasRestantes
+  C:0D93H         PUBLIC        _moverObstaculo
+  C:0E49H         PUBLIC        inicializarJogador
+  C:0C07H         PUBLIC        _desenharPonto
+  C:0DD7H         PUBLIC        limparDisplay
+  D:0014H         PUBLIC        px
+  D:0016H         PUBLIC        tempoRestante
+  -------         PROC          LIGARINTERRUPCOES
+  C:0E2EH         LINE#         66
+  C:0E2EH         LINE#         67
+  C:0E2EH         LINE#         68
+  C:0E31H         LINE#         69
+  C:0E33H         LINE#         70
+  C:0E35H         LINE#         71
+  C:0E37H         LINE#         72
+  C:0E3AH         LINE#         73
+  C:0E3CH         LINE#         74
+  -------         ENDPROC       LIGARINTERRUPCOES
+  -------         PROC          LIMPARDISPLAY
+  C:0DD7H         LINE#         80
+  C:0DD7H         LINE#         81
+  C:0DD7H         LINE#         83
+  C:0DD9H         LINE#         84
+  C:0DDBH         LINE#         85
+  C:0DDDH         LINE#         86
+  C:0DDFH         LINE#         87
+  C:0DE1H         LINE#         90
+  C:0DE3H         LINE#         91
+  C:0DE5H         LINE#         92
+  C:0DE7H         LINE#         93
+  C:0DE9H         LINE#         94
+  C:0DEBH         LINE#         95
+  C:0DEDH         LINE#         96
+  C:0DEFH         LINE#         99
+  C:0DF1H         LINE#         100
+  -------         ENDPROC       LIMPARDISPLAY
+  -------         PROC          _DESENHARPONTO
+  D:0006H         SYMBOL        x
+  D:0004H         SYMBOL        y
+  C:0C07H         LINE#         103
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/19/2017  15:20:11  PAGE 4
+
+
+  C:0C07H         LINE#         104
+  C:0C07H         LINE#         107
+  C:0C1BH         LINE#         108
+  C:0C1BH         LINE#         109
+  C:0C1DH         LINE#         110
+  C:0C1FH         LINE#         111
+  C:0C21H         LINE#         112
+  C:0C23H         LINE#         113
+  C:0C25H         LINE#         114
+  C:0C27H         LINE#         115
+  C:0C29H         LINE#         116
+  C:0C2BH         LINE#         117
+  C:0C2DH         LINE#         118
+  C:0C2DH         LINE#         119
+  C:0C2DH         LINE#         120
+  C:0C2DH         LINE#         121
+  C:0C2DH         LINE#         125
+  C:0C52H         LINE#         126
+  C:0C52H         LINE#         127
+  C:0C54H         LINE#         128
+  C:0C55H         LINE#         129
+  C:0C57H         LINE#         130
+  C:0C58H         LINE#         131
+  C:0C5AH         LINE#         132
+  C:0C5BH         LINE#         133
+  C:0C5DH         LINE#         134
+  C:0C5EH         LINE#         135
+  C:0C60H         LINE#         136
+  C:0C61H         LINE#         137
+  C:0C63H         LINE#         138
+  C:0C64H         LINE#         139
+  C:0C66H         LINE#         140
+  C:0C66H         LINE#         141
+  C:0C66H         LINE#         142
+  C:0C66H         LINE#         143
+  C:0C66H         LINE#         144
+  -------         ENDPROC       _DESENHARPONTO
+  -------         PROC          L?0157
+  -------         ENDPROC       L?0157
+  -------         PROC          _APAGARPONTO
+  D:0006H         SYMBOL        x
+  D:0004H         SYMBOL        y
+  C:0BA7H         LINE#         147
+  C:0BA7H         LINE#         148
+  C:0BA7H         LINE#         151
+  C:0BBBH         LINE#         152
+  C:0BBBH         LINE#         153
+  C:0BBDH         LINE#         154
+  C:0BBFH         LINE#         155
+  C:0BC1H         LINE#         156
+  C:0BC3H         LINE#         157
+  C:0BC5H         LINE#         158
+  C:0BC7H         LINE#         159
+  C:0BC9H         LINE#         160
+  C:0BCBH         LINE#         161
+  C:0BCDH         LINE#         162
+  C:0BCDH         LINE#         163
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/19/2017  15:20:11  PAGE 5
+
+
+  C:0BCDH         LINE#         164
+  C:0BCDH         LINE#         165
+  C:0BCDH         LINE#         169
+  C:0BF2H         LINE#         170
+  C:0BF2H         LINE#         171
+  C:0BF4H         LINE#         172
+  C:0BF5H         LINE#         173
+  C:0BF7H         LINE#         174
+  C:0BF8H         LINE#         175
+  C:0BFAH         LINE#         176
+  C:0BFBH         LINE#         177
+  C:0BFDH         LINE#         178
+  C:0BFEH         LINE#         179
+  C:0C00H         LINE#         180
+  C:0C01H         LINE#         181
+  C:0C03H         LINE#         182
+  C:0C04H         LINE#         183
+  C:0C06H         LINE#         184
+  C:0C06H         LINE#         185
+  C:0C06H         LINE#         186
+  C:0C06H         LINE#         187
+  C:0C06H         LINE#         188
+  -------         ENDPROC       _APAGARPONTO
+  -------         PROC          _DESENHARLINHA
+  D:001EH         SYMBOL        Linha
+  -------         DO            
+  D:0021H         SYMBOL        i
+  -------         ENDDO         
+  C:0CF3H         LINE#         191
+  C:0CF9H         LINE#         192
+  C:0CF9H         LINE#         193
+  C:0CFEH         LINE#         194
+  C:0CFEH         LINE#         195
+  C:0CFEH         LINE#         196
+  C:0D18H         LINE#         197
+  C:0D1DH         LINE#         199
+  C:0D20H         LINE#         200
+  C:0D28H         LINE#         201
+  C:0D33H         LINE#         202
+  -------         ENDPROC       _DESENHARLINHA
+  -------         PROC          INICIALIZARJOGADOR
+  C:0E49H         LINE#         210
+  C:0E49H         LINE#         211
+  C:0E49H         LINE#         212
+  -------         ENDPROC       INICIALIZARJOGADOR
+  -------         PROC          MOVERJOGADORESQUERDA
+  C:0E0AH         LINE#         226
+  C:0E0AH         LINE#         227
+  C:0E0AH         LINE#         228
+  C:0E0DH         LINE#         229
+  C:0E15H         LINE#         230
+  -------         ENDPROC       MOVERJOGADORESQUERDA
+  -------         PROC          MOVERJOGADORDIREITA
+  C:0E1CH         LINE#         235
+  C:0E1CH         LINE#         236
+  C:0E1CH         LINE#         237
+  C:0E1FH         LINE#         238
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/19/2017  15:20:11  PAGE 6
+
+
+  C:0E27H         LINE#         239
+  -------         ENDPROC       MOVERJOGADORDIREITA
+  -------         PROC          _MOVEROBSTACULO
+  D:0027H         SYMBOL        x
+  D:0002H         SYMBOL        y
+  C:0D93H         LINE#         243
+  C:0D9BH         LINE#         244
+  C:0D9BH         LINE#         245
+  C:0D9EH         LINE#         246
+  C:0DA9H         LINE#         247
+  C:0DB8H         LINE#         248
+  -------         ENDPROC       _MOVEROBSTACULO
+  -------         PROC          VERIFICARCONTROLOS
+  C:0D66H         LINE#         252
+  C:0D66H         LINE#         253
+  C:0D66H         LINE#         254
+  C:0D69H         LINE#         255
+  C:0D69H         LINE#         256
+  C:0D76H         LINE#         257
+  C:0D79H         LINE#         258
+  C:0D7CH         LINE#         259
+  C:0D7CH         LINE#         260
+  C:0D7FH         LINE#         261
+  C:0D7FH         LINE#         262
+  C:0D8CH         LINE#         263
+  C:0D8FH         LINE#         264
+  C:0D92H         LINE#         265
+  C:0D92H         LINE#         266
+  -------         ENDPROC       VERIFICARCONTROLOS
+  -------         PROC          _ESTALIGADO
+  D:0006H         SYMBOL        x
+  D:0004H         SYMBOL        y
+  C:0AA2H         LINE#         274
+  C:0AA2H         LINE#         275
+  C:0AA2H         LINE#         280
+  C:0AB6H         LINE#         281
+  C:0AB6H         LINE#         282
+  C:0AB9H         LINE#         283
+  C:0ABBH         LINE#         284
+  C:0ABBH         LINE#         285
+  C:0ABEH         LINE#         286
+  C:0AC0H         LINE#         287
+  C:0AC0H         LINE#         288
+  C:0AC3H         LINE#         289
+  C:0AC5H         LINE#         290
+  C:0AC5H         LINE#         291
+  C:0AC8H         LINE#         292
+  C:0ACAH         LINE#         293
+  C:0ACAH         LINE#         294
+  C:0ACDH         LINE#         295
+  C:0ACFH         LINE#         296
+  C:0ACFH         LINE#         297
+  C:0ACFH         LINE#         298
+  C:0ACFH         LINE#         299
+  C:0ACFH         LINE#         307
+  C:0AF4H         LINE#         308
+  C:0AF4H         LINE#         309
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/19/2017  15:20:11  PAGE 7
+
+
+  C:0AF7H         LINE#         310
+  C:0AF9H         LINE#         311
+  C:0AFBH         LINE#         312
+  C:0AFEH         LINE#         313
+  C:0B00H         LINE#         314
+  C:0B02H         LINE#         315
+  C:0B05H         LINE#         316
+  C:0B07H         LINE#         317
+  C:0B09H         LINE#         318
+  C:0B0CH         LINE#         319
+  C:0B0EH         LINE#         320
+  C:0B10H         LINE#         321
+  C:0B13H         LINE#         322
+  C:0B15H         LINE#         323
+  C:0B17H         LINE#         324
+  C:0B1AH         LINE#         325
+  C:0B1CH         LINE#         326
+  C:0B1EH         LINE#         327
+  C:0B21H         LINE#         328
+  C:0B26H         LINE#         329
+  C:0B28H         LINE#         330
+  C:0B28H         LINE#         331
+  C:0B2BH         LINE#         332
+  C:0B2BH         LINE#         333
+  -------         ENDPROC       _ESTALIGADO
+  -------         PROC          MOVEROBSTACULOS
+  -------         DO            
+  D:0023H         SYMBOL        x
+  D:0025H         SYMBOL        y
+  -------         ENDDO         
+  C:09E8H         LINE#         338
+  C:09E8H         LINE#         339
+  C:09E8H         LINE#         340
+  C:09EDH         LINE#         342
+  C:09EDH         LINE#         343
+  C:09EDH         LINE#         344
+  C:09F3H         LINE#         345
+  C:09F3H         LINE#         346
+  C:09F3H         LINE#         347
+  C:0A02H         LINE#         348
+  C:0A0DH         LINE#         349
+  C:0A15H         LINE#         350
+  C:0A20H         LINE#         351
+  C:0A28H         LINE#         352
+  C:0A33H         LINE#         355
+  C:0A48H         LINE#         356
+  C:0A48H         LINE#         358
+  C:0A51H         LINE#         359
+  C:0A59H         LINE#         360
+  C:0A5AH         LINE#         363
+  C:0A63H         LINE#         364
+  C:0A6BH         LINE#         365
+  C:0A6CH         LINE#         368
+  C:0A75H         LINE#         369
+  C:0A7DH         LINE#         370
+  C:0A7EH         LINE#         373
+  C:0A87H         LINE#         374
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/19/2017  15:20:11  PAGE 8
+
+
+  C:0A8FH         LINE#         375
+  C:0A90H         LINE#         378
+  C:0A99H         LINE#         379
+  C:0AA1H         LINE#         380
+  C:0AA1H         LINE#         384
+  C:0AA1H         LINE#         385
+  C:0AA1H         LINE#         386
+  C:0AA1H         LINE#         387
+  -------         ENDPROC       MOVEROBSTACULOS
+  -------         PROC          VERIFICARVIDASJOGADOR
+  C:0DF2H         LINE#         395
+  C:0DF2H         LINE#         396
+  C:0DF2H         LINE#         397
+  C:0E01H         LINE#         398
+  C:0E09H         LINE#         399
+  -------         ENDPROC       VERIFICARVIDASJOGADOR
+  -------         PROC          _DELAY
+  D:0008H         SYMBOL        d
+  -------         DO            
+  D:000CH         SYMBOL        i
+  -------         ENDDO         
+  C:0CB0H         LINE#         401
+  C:0CB8H         LINE#         402
+  C:0CB8H         LINE#         404
+  C:0CF2H         LINE#         405
+  -------         ENDPROC       _DELAY
+  -------         PROC          L?0156
+  -------         ENDPROC       L?0156
+  -------         PROC          _JOGAR
+  D:001AH         SYMBOL        dificuldade
+  C:0C6DH         LINE#         410
+  C:0C75H         LINE#         411
+  C:0C75H         LINE#         412
+  C:0C7BH         LINE#         413
+  C:0C81H         LINE#         414
+  C:0C87H         LINE#         415
+  C:0C8DH         LINE#         417
+  C:0C90H         LINE#         420
+  C:0C9BH         LINE#         422
+  C:0CA7H         LINE#         423
+  C:0CA7H         LINE#         429
+  C:0CA7H         LINE#         431
+  C:0CADH         LINE#         434
+  C:0CAFH         LINE#         438
+  -------         ENDPROC       _JOGAR
+  -------         PROC          TIMER0_ISR
+  -------         DO            
+  D:0018H         SYMBOL        x
+  D:0002H         SYMBOL        y
+  -------         ENDDO         
+  C:0B2CH         LINE#         440
+  C:0B45H         LINE#         443
+  C:0B4BH         LINE#         444
+  C:0B4BH         LINE#         445
+  C:0B4EH         LINE#         446
+  C:0B4EH         LINE#         447
+  C:0B5DH         LINE#         448
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/19/2017  15:20:11  PAGE 9
+
+
+  C:0B5DH         LINE#         449
+  C:0B64H         LINE#         450
+  C:0B6BH         LINE#         451
+  C:0B6BH         LINE#         452
+  C:0B76H         LINE#         453
+  C:0B89H         LINE#         454
+  -------         ENDPROC       TIMER0_ISR
+  -------         PROC          MAIN
+  C:0D34H         LINE#         469
+  C:0D34H         LINE#         470
+  C:0D34H         LINE#         471
+  C:0D37H         LINE#         473
+  C:0D42H         LINE#         474
+  C:0D47H         LINE#         475
+  C:0D4CH         LINE#         476
+  C:0D57H         LINE#         477
+  C:0D62H         LINE#         479
+  C:0D65H         LINE#         482
+  -------         ENDPROC       MAIN
+  -------         ENDMOD        JOGO
+
+  -------         MODULE        ?C?FPADD
+  C:0807H         PUBLIC        ?C?FPADD
+  C:0803H         PUBLIC        ?C?FPSUB
+  -------         ENDMOD        ?C?FPADD
+
+  -------         MODULE        ?C?FPCMP
+  C:08FAH         PUBLIC        ?C?FPCMP
+  C:08F8H         PUBLIC        ?C?FPCMP3
+  -------         ENDMOD        ?C?FPCMP
+
+  -------         MODULE        ?C?CLDOPTR
+  C:09BBH         PUBLIC        ?C?CLDOPTR
+  -------         ENDMOD        ?C?CLDOPTR
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?INICIALIZARJOGADOR?JOGO
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?VERIFICARCONTROLOS?JOGO
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?MOVEROBSTACULOS?JOGO
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?VERIFICARVIDASJOGADOR?JOGO
+
+*** WARNING L16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?_DELAY?JOGO
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0461H BYTE (54%) *
+******************************************************************************
+
+Program Size: data=42.0 xdata=0 code=1624
+LINK/LOCATE RUN COMPLETE.  5 WARNING(S),  0 ERROR(S)
