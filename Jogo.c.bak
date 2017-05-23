@@ -31,22 +31,24 @@ sbit Direita = P3^3;
 #define DIFICULDADE4 600
 #define DIFICULDADE5 50
 
-
+char pxJogador;
 char ImagemAtual;			// Vari?vel com o n?mero da imagem
 char LinhaAtual;			// Vari?vel para guardar o n?mero de linha
 char TempoAntesDeRedesenhar; 			// Vari?vel para medir 1 s (20x50 ms)
 char ImagemX[NR_LINHAS];	// Display com 7 valores
 char ObstaculosInicio;
+char nivel = 1;
 
 int vidasRestantes;		//vidas restantes do jogador
 int tempoRestante;						//tempo restante para o nível acabar
 
 static char Imagens[NR_IMAGENS][NR_LINHAS] = 
-{{3, 2, 1, 0, 0, 0, 4},		// Imagem 0
-{0, 0, 0, 0, 0, 0, 4},		// Imagem 1
-{0, 0, 0, 0, 0, 0, 4},		// Imagem 2
-{0, 0, 0, 0, 0, 0, 4},		// Imagem 3
-{0, 0, 0, 0, 0, 0, 4},		// Imagem 1
+{{3, 2, 1, 6, 0, 0, 4},		// Nível 1
+{4, 3, 2, 6, 0, 0, 4},		// Nível 2
+{7, 6, 2, 6, 0, 0, 4},		// Nível 3
+{8, 2, 3, 6, 0, 0, 4},		// Nível 4
+{1, 4, 4, 6, 0, 0, 4},		// Nível 5
+
 {0, 0, 0, 0, 0, 0, 4},		// Imagem 2
 {0, 0, 0, 0, 0, 0, 4},		// Imagem 3
 {0, 0, 0, 0, 0, 0, 4},		// Imagem 1
@@ -55,25 +57,44 @@ static char Imagens[NR_IMAGENS][NR_LINHAS] =
 static char ImagemY[NR_LINHAS] = 
 {254, 253, 251, 247, 239, 223, 191};
 
-
 void redesenharEcra()
 {
    int i;				
-   for (i = 0; i < NR_LINHAS; i++)
+   for (i = 0; i < NR_LINHAS - 1; i++)
       ImagemX[i] = Imagens[ImagemAtual][i];
 }
-
 void moverObstaculos()
 {
 	int i;
 	char obstaculo;
 	for (i = NR_LINHAS - 2; i > 0 ; i--)
-	{
 			ImagemX[i] = ImagemX[i-1];
+	if(ObstaculosInicio < Y_MAX)
+	{
+		ImagemX[ObstaculosInicio] = 0;
+		ObstaculosInicio++;
 	}
-	ImagemX[ObstaculosInicio] = 0;
-	ObstaculosInicio++;
 }
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+void moverJogadorEsquerda() interrupt 0
+{
+	if(ImagemX[NR_LINHAS - 1] != 16)
+	{
+		ImagemX[NR_LINHAS - 1] << 2; // shift left
+		pxJogador--;
+	}
+}
+
+void moverJogadorDireita() interrupt 2
+{
+	if(ImagemX[NR_LINHAS - 1] != 1)
+	{
+		ImagemX[NR_LINHAS - 1] >> 1; // shift right
+		pxJogador++;
+	}
+}
+
 void verificarObstaculos() interrupt 1
 {
    TH0 = TEMPO_HIGH;		// Timer 0 = 50 ms
@@ -84,6 +105,7 @@ void verificarObstaculos() interrupt 1
       TempoAntesDeRedesenhar = TEMPO_1SEGUNDO;		// Actualiza a vari?vel tempo
 			moverObstaculos();
    }
+	 tempoRestante--;
 }
 
 void varrerDisplay(void) interrupt 3
@@ -95,15 +117,21 @@ void varrerDisplay(void) interrupt 3
    if (LinhaAtual == NR_LINHAS) 	// Verifica se ? a ?ltima linha
 		LinhaAtual = 0;		// Para a linha inicial
 }
-
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
-void inicializarDisplay(void)
+void inicializarDisplay()
 {
-	 ImagemAtual = 0;			// Imagem inicial
-   redesenharEcra();			// Chama rotina para mostrar imagem no display
 	 ObstaculosInicio = 0;
+	 ImagemAtual = nivel - 1;			// Imagem inicial
+   redesenharEcra();			// Chama rotina para mostrar imagem no display
 }
+
+void inicializarJogador()
+{
+	ImagemX[NR_LINHAS - 1] = 4;
+	pxJogador = 2;
+}
+
 
 void ligarInterrupcoes(void)
 {
@@ -122,60 +150,40 @@ void ligarInterrupcoes(void)
    LinhaAtual = 0;	     		// Indica que ? para mostrar a primeira linha
    Input = VAZIO;			// P3 ? uma porta de entrada
 }
-/////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-
-void verificarControlos(void)
-{
-		if(!Esquerda)				//Se for clicado para ir para a esquerda
-		{
-//			if(px > X_MIN)		//Se não tiver no limite esquerdo do DisplayY
-//				moverJogadorEsquerda();	//Anda para a esquerda
-			while(!Esquerda) {}		//Espera o 'largar' do botão
-		}
-		if(!Direita)				//Se for clicado para ir para a direita
-		{
-//			if(px < X_MAX)		//Se não tiver no limite direito do DisplayY
-//				moverJogadorDireita();	//Anda para a direita
-			while(!Direita) {}		//Espera o 'largar' do botão
-		}
-}
 
 void verificarVidasJogador(void)
 {
-//	if(estaLigado(px,Y_MIN+1))
+	if(estaLigado(px,Y_MIN+1))
 		vidasRestantes--;
 }
 
 void jogar(double dificuldade)
 {
+	inicializarJogador();
+	inicializarDisplay();
+	ligarInterrupcoes();
+	
 	vidasRestantes = VIDAS_INICIAL;		//vidas restantes do jogador é inicializada
 	tempoRestante = TEMPO_NIVEL;
-
-	//inicializarJogador();	//o jogador é desenhado no DisplayY
 
 	//Ciclo do jogo propriamente dito
 	while(vidasRestantes && tempoRestante)	//Enquanto que houver vidas restantes
 	{
-		//verificarControlos();				//verifica se é clicado para ir para a esquerda ou para a direita (fazendo o respetivo movimento)
-		//moverObstaculos();					//desenha novos objetos e arrasta os atuais para baixo
 		//verificarVidasJogador();		//verifica se o jogador bate num obstáculo (decrementando uma vida nesse caso)
-		//delay(dificuldade);
-		tempoRestante--;
 	}
 	
 	if(vidasRestantes)
+	{
+		nivel++;
 		return;
+	}
 	
-	//showGameOver();
+	while(1){}
 	
 }
 
 void main(void)
 {
-	inicializarDisplay();
-	ligarInterrupcoes();
-	
 	jogar(DIFICULDADE1);			//Nível 1 do jogo
 	jogar(DIFICULDADE2);			//Nível 2 do jogo
 	jogar(DIFICULDADE3);			//Nível 3 do jogo
