@@ -77,7 +77,7 @@ void desenharNovaImagem()
 void moverObstaculos()
 {
 	int i;
-	for (i = POS_JOGADOR - 1; i > 0 ; i--)			//Percorre todas as linhas
+	for (i = POS_JOGADOR - 1; i > ObstaculosInicio ; i--)			//Percorre todas as linhas
 			ImagemX[i] = ImagemX[i-1]; 							//Puxa a imagem da linha (acima) para baixo
 	if(ObstaculosInicio < NR_LINHAS - 1)				//Se os obstáculos ainda não chegaram até ao fim
 	{
@@ -132,84 +132,108 @@ void verificarObstaculos() interrupt 1
 }
 /************************************************************************/
 
+/*	Função para varrer o display	*/
 void varrerDisplay(void) interrupt 3
 {
-   DisplayY = VAZIO;			// Desliga todas as linhas de sa?da
+   DisplayY = VAZIO;								// Desliga todas as linhas de sa?da
    DisplayX = ImagemX[LinhaAtual];	// Mostra a linha
    DisplayY = ImagemY[LinhaAtual];	// Activa a linha
-   LinhaAtual++;			// Pr?xima linha
-   if (LinhaAtual == NR_LINHAS) 	// Verifica se ? a ?ltima linha
-		LinhaAtual = 0;		// Para a linha inicial
+   LinhaAtual++;										// Passa para a próxima linha
+	
+   if (LinhaAtual == NR_LINHAS) 		// Caso tenha chegado à ultima linha,
+		LinhaAtual = 0;									// Passa novamente para a primeira linha
 }
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
+/**********************************/
+
+/*	Função para desenhar os obstáculos pela primeira vez	*/
+/*	(consoante a imagem (dos obstáculos) do devido nível)	*/
 void inicializarObstaculos()
 {
-	 ObstaculosInicio = 0;
-	 ImagemAtual = NivelAtual - 1;			// Imagem inicial
-   desenharNovaImagem();			// Chama rotina para mostrar imagem no display
+	 ObstaculosInicio = 0;						// A "primeira" linha dos obstáculos começa no topo do display
+	 ImagemAtual = NivelAtual - 1;		// Busca a imagem do nível atual
+   desenharNovaImagem();						// Desenha a imagem do nível atual
 }
+/**********************************************************/
 
+/*	Função para desenhar pela primeira vez o jogador (na sua posição inicial)	*/
 void inicializarJogador()
 {
-	 ImagemX[POS_JOGADOR] = POS_INICIAL;
+	 ImagemX[POS_JOGADOR] = POS_INICIAL;	//O jogador fica na sua posição inicial
 }
+/******************************************************************************/
 
-
+/*	Função para ligar as interrupções (com o estado adequado)	*/
 void ligarInterrupcoes(void)
 {
-	 TMOD = 33;			// Timer 0 de 16 bits - #00100001b
-   TH0 = TEMPO_HIGH;			// Timer 0 = 50 ms
+	 TMOD = 33;													// Timer 0 de 16 bits - #00100001b
+   TH0 = TEMPO_HIGH;									// Timer 0 = 50 ms
    TL0 = TEMPO_LOW; 
-   TH1 = TEMPO_T1;			// Timer 1 = 112 us
+   TH1 = TEMPO_T1;										// Timer 1 = 112 us
    TL1 = TEMPO_T1; 
-   IP = 0;				// N?o altera as prioridades
-   IE = INTERRUPCOES_ESTADO_INICIAL;			// Activa as interrup??es - #10001111b:
-   IT0 = 1;			// Ext0 detectada na transi??o descendente
-   IT1 = 1;			// Ext1 detectada na transi??o descendente
-   TR0 = 1;			// Inicia timer 0
-   TR1 = 1;			// Inicia timer 1
-   LinhaAtual = 0;	     		// Indica que ? para mostrar a primeira linha
-   Input = VAZIO;			// P3 ? uma porta de entrada
+   IP = 0;														// Não altera as prioridades
+   IE = INTERRUPCOES_ESTADO_INICIAL;	// Activa as interrupções - #10001111b:
+   IT0 = 1;														// Ext0 detectada na transição descendente
+   IT1 = 1;														// Ext1 detectada na transição descendente
+   TR0 = 1;														// Inicia timer 0
+   TR1 = 1;														// Inicia timer 1
+   LinhaAtual = 0;	     							// Indica que é para mostrar a primeira linha
+   Input = VAZIO;											// Porta de entrada é limpa
 }
+/**************************************************************/
+
+/* Função para mostrar a imagem de GameOver (quando o jogador perde todas as vidas num nível)	*/
 void gameOver()
 {
-	ImagemAtual = GAMEOVER;
-	desenharNovaImagem();
-	for(;;);
+	ImagemAtual = GAMEOVER;		//Busca a imagem do GameOver
+	desenharNovaImagem();			//Desenha essa imagem
+	for(;;);									//Fica em loop
 }
+/**********************************************************************************************/
+
+/* Função para mostrar a imagem da vitória (quando o jogador passa com sucesso por todos os níveis)	*/
 void victory()
 {
-	ImagemAtual = VICTORY;
-	desenharNovaImagem();
-	for(;;);
+	ImagemAtual = VICTORY;		//Busca a imagem da vitória
+	desenharNovaImagem();			//Desenha essa imagem
+	for(;;);									//Fica em loop
 }
+/****************************************************************************************************/
 
+/* Função para jogar um dado nível do jogo */
 void jogar(double dificuldade)
 {
-	DificuldadeAtual = dificuldade;
+	//Busca no argumento 'dificuldade' o tempo que demora os obstáculos a descer
+	DificuldadeAtual = dificuldade;			
 	TempoObstaculos = DificuldadeAtual;
 	
-	inicializarJogador();
-	inicializarObstaculos();
+	inicializarJogador();							//O jogador é inicializado no display
+	inicializarObstaculos();					//Os obstáculos do nível são inicializados no display
 	
 	VidasRestantes = VIDAS_INICIAL;		//vidas restantes do jogador é inicializada
 
 	//Ciclo do jogo propriamente dito
 	while(VidasRestantes && ObstaculosInicio < NR_LINHAS - 1) {}
 	
+	//Caso tenha acabado o nível com sucesso,
+	//Passa para o próximo nível
 	if(VidasRestantes)
 	{
-		NivelAtual++;
+		NivelAtual++;		
 		return;
 	}
 	
+	//Caso contrário,
+	//Mostra a imagem de GameOver
 	gameOver();
 }
+/*******************************************/
 
+/********************************************/
+/*						Função principal							*/
+/********************************************/
 void main()
 {
-	ligarInterrupcoes();
+	ligarInterrupcoes();			//Liga as interrupções
 	
 	jogar(DIFICULDADE1);			//Nível 1 do jogo
 	jogar(DIFICULDADE2);			//Nível 2 do jogo
@@ -217,6 +241,9 @@ void main()
 	jogar(DIFICULDADE4);			//Nível 4 do jogo
 	jogar(DIFICULDADE5);			//Nível 5 do jogo
 
+	//Caso tenha passado por todos os níveis sem perder as vidas todas
+	//Mostra a imagem da vitória
 	victory();
 }
-/*******************************************************************************/
+/********************************************/
+/********************************************/

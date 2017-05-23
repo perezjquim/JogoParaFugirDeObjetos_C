@@ -77,7 +77,7 @@ void desenharNovaImagem()
 void moverObstaculos()
 {
 	int i;
-	for (i = POS_JOGADOR - 1; i > 0 ; i--)			//Percorre todas as linhas
+	for (i = POS_JOGADOR - 1; i > ObstaculosInicio ; i--)			//Percorre todas as linhas
 			ImagemX[i] = ImagemX[i-1]; 							//Puxa a imagem da linha (acima) para baixo
 	if(ObstaculosInicio < NR_LINHAS - 1)				//Se os obstáculos ainda não chegaram até ao fim
 	{
@@ -90,7 +90,7 @@ void moverObstaculos()
 /*	Função para verificar se há colisão entre o jogador e um obstáculo	*/
 void verificarVidasJogador(void)
 {
-	if((ImagemX[POS_JOGADOR] & ImagemX[POS_JOGADOR - 1]) != LINHA_VAZIA) //Se houver "interseção" (colisão)
+	if((ImagemX[POS_JOGADOR] & ImagemX[POS_JOGADOR - 1])) //Se houver "interseção" (colisão)
 		VidasRestantes--;																									 //Decrementa a quantidade de vidas restantes
 }
 /************************************************************************/

@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22                                                        05/23/2017  14:30:08  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22                                                        05/23/2017  17:39:56  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
@@ -40,26 +40,26 @@ LINK MAP OF MODULE:  .\Objects\Jogo (JOGO)
             CODE    0800H     008CH     UNIT         ?C_C51STARTUP
             CODE    088CH     0045H     UNIT         ?C?LIB_CODE
             CODE    08D1H     0041H     UNIT         ?C_INITSEG
-            CODE    0912H     0031H     UNIT         ?PR?MAIN?JOGO
-            CODE    0943H     002FH     UNIT         ?PR?_JOGAR?JOGO
-            CODE    0972H     002EH     UNIT         ?PR?VERIFICAROBSTACULOS?JOGO
-            CODE    09A0H     002DH     UNIT         ?PR?VARRERDISPLAY?JOGO
-            CODE    09CDH     002CH     UNIT         ?PR?MOVEROBSTACULOS?JOGO
-            CODE    09F9H     0022H     UNIT         ?PR?LIGARINTERRUPCOES?JOGO
-            CODE    0A1BH     0021H     UNIT         ?PR?DESENHARNOVAIMAGEM?JOGO
-            CODE    0A3CH     0016H     UNIT         ?PR?MOVERJOGADORDIREITA?JOGO
-            CODE    0A52H     0015H     UNIT         ?PR?MOVERJOGADORESQUERDA?JOGO
-            CODE    0A67H     000BH     UNIT         ?PR?INICIALIZAROBSTACULOS?JOGO
-            CODE    0A72H     0009H     UNIT         ?PR?VERIFICARVIDASJOGADOR?JOGO
-            CODE    0A7BH     0008H     UNIT         ?PR?GAMEOVER?JOGO
-            CODE    0A83H     0008H     UNIT         ?PR?VICTORY?JOGO
-            CODE    0A8BH     0004H     UNIT         ?PR?INICIALIZARJOGADOR?JOGO
+            CODE    0912H     003EH     UNIT         ?PR?MOVEROBSTACULOS?JOGO
+            CODE    0950H     0032H     UNIT         ?PR?VERIFICAROBSTACULOS?JOGO
+            CODE    0982H     0031H     UNIT         ?PR?MAIN?JOGO
+            CODE    09B3H     002FH     UNIT         ?PR?_JOGAR?JOGO
+            CODE    09E2H     002DH     UNIT         ?PR?VARRERDISPLAY?JOGO
+            CODE    0A0FH     0022H     UNIT         ?PR?LIGARINTERRUPCOES?JOGO
+            CODE    0A31H     0021H     UNIT         ?PR?DESENHARNOVAIMAGEM?JOGO
+            CODE    0A52H     0016H     UNIT         ?PR?MOVERJOGADORDIREITA?JOGO
+            CODE    0A68H     0015H     UNIT         ?PR?MOVERJOGADORESQUERDA?JOGO
+            CODE    0A7DH     000BH     UNIT         ?PR?INICIALIZAROBSTACULOS?JOGO
+            CODE    0A88H     0009H     UNIT         ?PR?VERIFICARVIDASJOGADOR?JOGO
+            CODE    0A91H     0008H     UNIT         ?PR?GAMEOVER?JOGO
+            CODE    0A99H     0008H     UNIT         ?PR?VICTORY?JOGO
+            CODE    0AA1H     0004H     UNIT         ?PR?INICIALIZARJOGADOR?JOGO
 
 
 
 OVERLAY MAP OF MODULE:   .\Objects\Jogo (JOGO)
 
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/23/2017  14:30:08  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/23/2017  17:39:56  PAGE 2
 
 
 
@@ -108,27 +108,27 @@ SYMBOL TABLE OF MODULE:  .\Objects\Jogo (JOGO)
   D:00A0H         PUBLIC        P2
   D:00B0H         PUBLIC        P3
   D:0008H         PUBLIC        ObstaculosInicio
-  C:0A72H         PUBLIC        verificarVidasJogador
+  C:0A88H         PUBLIC        verificarVidasJogador
   D:00A8H         PUBLIC        IE
   B:00B0H.0       PUBLIC        Input
-  C:0A83H         PUBLIC        victory
-  C:0949H         PUBLIC        _jogar
+  C:0A99H         PUBLIC        victory
+  C:09B9H         PUBLIC        _jogar
   D:00B8H         PUBLIC        IP
-  C:09F9H         PUBLIC        ligarInterrupcoes
-  C:0912H         PUBLIC        main
+  C:0A0FH         PUBLIC        ligarInterrupcoes
+  C:0982H         PUBLIC        main
   D:0009H         PUBLIC        ImagemX
   D:0010H         SYMBOL        ImagemY
   D:0017H         PUBLIC        TempoObstaculos
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/23/2017  14:30:08  PAGE 3
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/23/2017  17:39:56  PAGE 3
 
 
   D:0089H         PUBLIC        TMOD
-  C:0A52H         PUBLIC        moverJogadorEsquerda
+  C:0A68H         PUBLIC        moverJogadorEsquerda
   D:0018H         PUBLIC        VidasRestantes
-  C:0A7BH         PUBLIC        gameOver
-  C:0A1BH         PUBLIC        desenharNovaImagem
-  C:0A67H         PUBLIC        inicializarObstaculos
-  C:0A3CH         PUBLIC        moverJogadorDireita
+  C:0A91H         PUBLIC        gameOver
+  C:0A31H         PUBLIC        desenharNovaImagem
+  C:0A7DH         PUBLIC        inicializarObstaculos
+  C:0A52H         PUBLIC        moverJogadorDireita
   D:0019H         SYMBOL        Imagens
   D:008CH         PUBLIC        TH0
   B:0088H.0       PUBLIC        IT0
@@ -138,168 +138,168 @@ SYMBOL TABLE OF MODULE:  .\Objects\Jogo (JOGO)
   D:004BH         PUBLIC        DificuldadeAtual
   D:008AH         PUBLIC        TL0
   D:008BH         PUBLIC        TL1
-  C:09CDH         PUBLIC        moverObstaculos
+  C:0912H         PUBLIC        moverObstaculos
   B:0088H.4       PUBLIC        TR0
   B:0088H.6       PUBLIC        TR1
-  C:0A8BH         PUBLIC        inicializarJogador
-  C:0972H         PUBLIC        verificarObstaculos
+  C:0AA1H         PUBLIC        inicializarJogador
+  C:0950H         PUBLIC        verificarObstaculos
   D:004CH         PUBLIC        LinhaAtual
-  C:09A0H         PUBLIC        varrerDisplay
+  C:09E2H         PUBLIC        varrerDisplay
   D:004DH         PUBLIC        NivelAtual
   -------         PROC          DESENHARNOVAIMAGEM
   -------         DO            
   D:0006H         SYMBOL        i
   -------         ENDDO         
-  C:0A1BH         LINE#         68
-  C:0A1BH         LINE#         69
-  C:0A1BH         LINE#         71
-  C:0A1EH         LINE#         72
-  C:0A3BH         LINE#         73
+  C:0A31H         LINE#         68
+  C:0A31H         LINE#         69
+  C:0A31H         LINE#         71
+  C:0A34H         LINE#         72
+  C:0A51H         LINE#         73
   -------         ENDPROC       DESENHARNOVAIMAGEM
   -------         PROC          MOVEROBSTACULOS
   -------         DO            
   D:0006H         SYMBOL        i
   -------         ENDDO         
-  C:09CDH         LINE#         77
-  C:09CDH         LINE#         78
-  C:09CDH         LINE#         80
-  C:09D1H         LINE#         81
-  C:09E6H         LINE#         82
-  C:09EFH         LINE#         83
-  C:09EFH         LINE#         84
-  C:09F6H         LINE#         85
-  C:09F8H         LINE#         86
-  C:09F8H         LINE#         87
+  C:0912H         LINE#         77
+  C:0912H         LINE#         78
+  C:0912H         LINE#         80
+  C:092AH         LINE#         81
+  C:093DH         LINE#         82
+  C:0946H         LINE#         83
+  C:0946H         LINE#         84
+  C:094DH         LINE#         85
+  C:094FH         LINE#         86
+  C:094FH         LINE#         87
   -------         ENDPROC       MOVEROBSTACULOS
   -------         PROC          VERIFICARVIDASJOGADOR
-  C:0A72H         LINE#         91
-  C:0A72H         LINE#         92
-  C:0A72H         LINE#         93
-  C:0A78H         LINE#         94
-  C:0A7AH         LINE#         95
+  C:0A88H         LINE#         91
+  C:0A88H         LINE#         92
+  C:0A88H         LINE#         93
+  C:0A8EH         LINE#         94
+  C:0A90H         LINE#         95
   -------         ENDPROC       VERIFICARVIDASJOGADOR
   -------         PROC          MOVERJOGADORESQUERDA
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/23/2017  14:30:08  PAGE 4
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/23/2017  17:39:56  PAGE 4
 
 
-  C:0A52H         LINE#         99
-  C:0A56H         LINE#         101
-  C:0A5CH         LINE#         102
-  C:0A62H         LINE#         103
+  C:0A68H         LINE#         99
+  C:0A6CH         LINE#         101
+  C:0A72H         LINE#         102
+  C:0A78H         LINE#         103
   -------         ENDPROC       MOVERJOGADORESQUERDA
   -------         PROC          MOVERJOGADORDIREITA
-  C:0A3CH         LINE#         107
-  C:0A40H         LINE#         109
-  C:0A46H         LINE#         110
-  C:0A4DH         LINE#         111
+  C:0A52H         LINE#         107
+  C:0A56H         LINE#         109
+  C:0A5CH         LINE#         110
+  C:0A63H         LINE#         111
   -------         ENDPROC       MOVERJOGADORDIREITA
   -------         PROC          VERIFICAROBSTACULOS
-  C:0972H         LINE#         116
-  C:0981H         LINE#         119
-  C:0984H         LINE#         120
-  C:0987H         LINE#         122
-  C:098AH         LINE#         126
-  C:098AH         LINE#         127
-  C:098AH         LINE#         128
-  C:098DH         LINE#         129
-  C:0990H         LINE#         130
-  C:0993H         LINE#         131
-  C:0993H         LINE#         132
+  C:0950H         LINE#         116
+  C:0961H         LINE#         119
+  C:0964H         LINE#         120
+  C:0967H         LINE#         122
+  C:096AH         LINE#         126
+  C:096AH         LINE#         127
+  C:096AH         LINE#         128
+  C:096DH         LINE#         129
+  C:0970H         LINE#         130
+  C:0973H         LINE#         131
+  C:0973H         LINE#         132
   -------         ENDPROC       VERIFICAROBSTACULOS
   -------         PROC          VARRERDISPLAY
-  C:09A0H         LINE#         136
-  C:09A9H         LINE#         138
-  C:09ACH         LINE#         139
-  C:09B4H         LINE#         140
-  C:09BCH         LINE#         141
-  C:09BEH         LINE#         143
-  C:09C3H         LINE#         144
-  C:09C6H         LINE#         145
+  C:09E2H         LINE#         136
+  C:09EBH         LINE#         138
+  C:09EEH         LINE#         139
+  C:09F6H         LINE#         140
+  C:09FEH         LINE#         141
+  C:0A00H         LINE#         143
+  C:0A05H         LINE#         144
+  C:0A08H         LINE#         145
   -------         ENDPROC       VARRERDISPLAY
   -------         PROC          INICIALIZAROBSTACULOS
-  C:0A67H         LINE#         150
-  C:0A67H         LINE#         151
-  C:0A67H         LINE#         152
-  C:0A6AH         LINE#         153
-  C:0A6FH         LINE#         154
+  C:0A7DH         LINE#         150
+  C:0A7DH         LINE#         151
+  C:0A7DH         LINE#         152
+  C:0A80H         LINE#         153
+  C:0A85H         LINE#         154
   -------         ENDPROC       INICIALIZAROBSTACULOS
   -------         PROC          INICIALIZARJOGADOR
-  C:0A8BH         LINE#         159
-  C:0A8BH         LINE#         160
-  C:0A8BH         LINE#         161
-  C:0A8EH         LINE#         162
+  C:0AA1H         LINE#         159
+  C:0AA1H         LINE#         160
+  C:0AA1H         LINE#         161
+  C:0AA4H         LINE#         162
   -------         ENDPROC       INICIALIZARJOGADOR
   -------         PROC          LIGARINTERRUPCOES
-  C:09F9H         LINE#         166
-  C:09F9H         LINE#         167
-  C:09F9H         LINE#         168
-  C:09FCH         LINE#         169
-  C:09FFH         LINE#         170
-  C:0A02H         LINE#         171
-  C:0A05H         LINE#         172
-  C:0A08H         LINE#         173
-  C:0A0BH         LINE#         174
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/23/2017  14:30:08  PAGE 5
+  C:0A0FH         LINE#         166
+  C:0A0FH         LINE#         167
+  C:0A0FH         LINE#         168
+  C:0A12H         LINE#         169
+  C:0A15H         LINE#         170
+  C:0A18H         LINE#         171
+  C:0A1BH         LINE#         172
+  C:0A1EH         LINE#         173
+  C:0A21H         LINE#         174
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/23/2017  17:39:56  PAGE 5
 
 
-  C:0A0EH         LINE#         175
-  C:0A10H         LINE#         176
-  C:0A12H         LINE#         177
-  C:0A14H         LINE#         178
-  C:0A16H         LINE#         179
-  C:0A18H         LINE#         180
-  C:0A1AH         LINE#         181
+  C:0A24H         LINE#         175
+  C:0A26H         LINE#         176
+  C:0A28H         LINE#         177
+  C:0A2AH         LINE#         178
+  C:0A2CH         LINE#         179
+  C:0A2EH         LINE#         180
+  C:0A30H         LINE#         181
   -------         ENDPROC       LIGARINTERRUPCOES
   -------         PROC          GAMEOVER
-  C:0A7BH         LINE#         185
-  C:0A7BH         LINE#         186
-  C:0A7BH         LINE#         187
-  C:0A7EH         LINE#         188
-  C:0A81H         LINE#         189
+  C:0A91H         LINE#         185
+  C:0A91H         LINE#         186
+  C:0A91H         LINE#         187
+  C:0A94H         LINE#         188
+  C:0A97H         LINE#         189
   -------         ENDPROC       GAMEOVER
   -------         PROC          VICTORY
-  C:0A83H         LINE#         194
-  C:0A83H         LINE#         195
-  C:0A83H         LINE#         196
-  C:0A86H         LINE#         197
-  C:0A89H         LINE#         198
+  C:0A99H         LINE#         194
+  C:0A99H         LINE#         195
+  C:0A99H         LINE#         196
+  C:0A9CH         LINE#         197
+  C:0A9FH         LINE#         198
   -------         ENDPROC       VICTORY
   -------         PROC          L?0036
   -------         ENDPROC       L?0036
   -------         PROC          _JOGAR
   D:0004H         SYMBOL        dificuldade
-  C:0949H         LINE#         203
-  C:0949H         LINE#         204
-  C:0949H         LINE#         206
-  C:094EH         LINE#         207
-  C:0951H         LINE#         209
-  C:0954H         LINE#         210
-  C:0957H         LINE#         212
-  C:095AH         LINE#         215
-  C:0967H         LINE#         219
-  C:096BH         LINE#         220
-  C:096BH         LINE#         221
-  C:096EH         LINE#         223
-  C:096EH         LINE#         227
-  C:0971H         LINE#         228
+  C:09B9H         LINE#         203
+  C:09B9H         LINE#         204
+  C:09B9H         LINE#         206
+  C:09BEH         LINE#         207
+  C:09C1H         LINE#         209
+  C:09C4H         LINE#         210
+  C:09C7H         LINE#         212
+  C:09CAH         LINE#         215
+  C:09D7H         LINE#         219
+  C:09DBH         LINE#         220
+  C:09DBH         LINE#         221
+  C:09DEH         LINE#         223
+  C:09DEH         LINE#         227
+  C:09E1H         LINE#         228
   -------         ENDPROC       _JOGAR
   -------         PROC          MAIN
-  C:0912H         LINE#         234
-  C:0912H         LINE#         235
-  C:0912H         LINE#         236
-  C:0915H         LINE#         238
-  C:091AH         LINE#         239
-  C:091FH         LINE#         240
-  C:092AH         LINE#         241
-  C:0935H         LINE#         242
-  C:0940H         LINE#         246
+  C:0982H         LINE#         234
+  C:0982H         LINE#         235
+  C:0982H         LINE#         236
+  C:0985H         LINE#         238
+  C:098AH         LINE#         239
+  C:098FH         LINE#         240
+  C:099AH         LINE#         241
+  C:09A5H         LINE#         242
+  C:09B0H         LINE#         246
   -------         ENDPROC       MAIN
   -------         ENDMOD        JOGO
 
   -------         MODULE        ?C?CASTF
   C:088CH         PUBLIC        ?C?CASTF
   -------         ENDMOD        ?C?CASTF
-BL51 BANKED LINKER/LOCATER V6.22                                                      05/23/2017  14:30:08  PAGE 6
+BL51 BANKED LINKER/LOCATER V6.22                                                      05/23/2017  17:39:56  PAGE 6
 
 
 
@@ -308,8 +308,8 @@ SYMBOL TABLE OF MODULE:  .\Objects\Jogo (JOGO)
   -------         ENDMOD        ?C?LNEG
 
 ******************************************************************************
-* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 01C9H BYTE (22%) *
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 01DFH BYTE (23%) *
 ******************************************************************************
 
-Program Size: data=79.0 xdata=0 code=670
+Program Size: data=79.0 xdata=0 code=692
 LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
