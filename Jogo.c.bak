@@ -1,6 +1,8 @@
+/*	Livrarias	*/
 #include <reg51.h>
 #include <stdio.h>
 #include <stdlib.h>
+/**************/
 
 /*	Portas	*/
 sbit Input = P3;
@@ -62,55 +64,73 @@ static char ImagemY[NR_LINHAS] =
 {254, 253, 251, 247, 239, 223, 191};
 /********************************************/
 
-void redesenharEcra()
+/* Função para desenhar uma nova imagem no ecrã	*/
+void desenharNovaImagem()
 {
    int i;				
    for (i = 0; i < POS_JOGADOR; i++)
-      ImagemX[i] = Imagens[ImagemAtual][i];
+      ImagemX[i] = Imagens[ImagemAtual][i];		//Atualiza a linha com a nova imagem
 }
+/************************************************/
+
+/* Função para mover todos os obstáculos (uma "casa" para baixo)	*/
 void moverObstaculos()
 {
 	int i;
-	for (i = POS_JOGADOR - 1; i > 0 ; i--)
-			ImagemX[i] = ImagemX[i-1];
-	if(ObstaculosInicio < NR_LINHAS - 1)
+	for (i = POS_JOGADOR - 1; i > 0 ; i--)			//Percorre todas as linhas
+			ImagemX[i] = ImagemX[i-1]; 							//Puxa a imagem da linha (acima) para baixo
+	if(ObstaculosInicio < NR_LINHAS - 1)				//Se os obstáculos ainda não chegaram até ao fim
 	{
-		ImagemX[ObstaculosInicio] = LINHA_VAZIA;
-		ObstaculosInicio++;
+		ImagemX[ObstaculosInicio] = LINHA_VAZIA;	//Apaga a "primeira" linha dos obstáculos
+		ObstaculosInicio++;												//Incrementa a posição onde "começam" os obstáculos
 	}
 }
+/******************************************************************/
+
+/*	Função para verificar se há colisão entre o jogador e um obstáculo	*/
 void verificarVidasJogador(void)
 {
-	if((ImagemX[POS_JOGADOR] & ImagemX[POS_JOGADOR - 1]) != LINHA_VAZIA)
-		VidasRestantes--;
+	if((ImagemX[POS_JOGADOR] & ImagemX[POS_JOGADOR - 1]) != LINHA_VAZIA) //Se houver "interseção" (colisão)
+		VidasRestantes--;																									 //Decrementa a quantidade de vidas restantes
 }
+/************************************************************************/
 
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
+/* Função para mover o jogador para a esquerda (quando é premido o devido botão)	*/
 void moverJogadorEsquerda() interrupt 0
 {
-	if(ImagemX[POS_JOGADOR] != LIMITE_X_ESQUERDA)
-		ImagemX[POS_JOGADOR] *= 2; // shift left
+	if(ImagemX[POS_JOGADOR] != LIMITE_X_ESQUERDA)	//Se não tiver encostado na borda esquerda
+		ImagemX[POS_JOGADOR] *= 2; 									//O jogador anda para a esquerda (shift left)
 }
+/**********************************************************************************/
 
+/* Função para mover o jogador para a direita (quando é premido o devido botão)	*/
 void moverJogadorDireita() interrupt 2
 {
-	if(ImagemX[POS_JOGADOR] != LIMITE_X_DIREITA)
-		ImagemX[POS_JOGADOR] /= 2; // shift right
+	if(ImagemX[POS_JOGADOR] != LIMITE_X_DIREITA)	//Se não tiver encostado na borda direita
+		ImagemX[POS_JOGADOR] /= 2;									//O jogador anda para a direita (shift right)
 }
+/********************************************************************************/
 
+/*	Função de controlo para os obstáculos	(que é feita a cada segundo)	*/
+/*	(verificar se há colisão e movê-los para baixo)											*/
 void verificarObstaculos() interrupt 1
 { 
-   TH0 = TEMPO_HIGH;		// Timer 0 = 50 ms
-   TL0 = TEMPO_LOW;		// Verifica se j? passou 1 segundo 
-   TempoObstaculos--;			
-   if (TempoObstaculos == 0)		// Verifica se o tempo terminou
+	 // Reinicializa o timer
+   TH0 = TEMPO_HIGH;			
+   TL0 = TEMPO_LOW;
+	
+   TempoObstaculos--;						// Decrementa a contagem (de 1 segundo)
+	
+	 // Caso a contagem tenha chegado ao fim,
+	 // Passa às verificações e ações dos obstáculos
+   if (TempoObstaculos == 0)		
    {
-		 	verificarVidasJogador();
-      TempoObstaculos = DificuldadeAtual;		// Actualiza a vari?vel tempo
-			moverObstaculos();
+		 	verificarVidasJogador();							// Verifica se há colisão entre o jogador e um obstáculo
+      TempoObstaculos = DificuldadeAtual;		// Reinicializa a contagem
+			moverObstaculos();										// Move os obstáculos para baixo
    }
 }
+/************************************************************************/
 
 void varrerDisplay(void) interrupt 3
 {
@@ -127,7 +147,7 @@ void inicializarObstaculos()
 {
 	 ObstaculosInicio = 0;
 	 ImagemAtual = NivelAtual - 1;			// Imagem inicial
-   redesenharEcra();			// Chama rotina para mostrar imagem no display
+   desenharNovaImagem();			// Chama rotina para mostrar imagem no display
 }
 
 void inicializarJogador()
@@ -155,13 +175,13 @@ void ligarInterrupcoes(void)
 void gameOver()
 {
 	ImagemAtual = GAMEOVER;
-	redesenharEcra();
+	desenharNovaImagem();
 	for(;;);
 }
 void victory()
 {
 	ImagemAtual = VICTORY;
-	redesenharEcra();
+	desenharNovaImagem();
 	for(;;);
 }
 
