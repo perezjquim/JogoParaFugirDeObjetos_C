@@ -49,14 +49,14 @@ char NivelAtual = 1;				// Nível atual do jogo (que representa a imagem do vetor
 /**********************/
 
 /*	Conjunto de imagens do jogo	*/
-static char Imagens[NR_IMAGENS][NR_LINHAS] = 
-{{3, 2, 1, 6, 0, 0, 4},		// Nível 1
-{4, 3, 2, 6, 0, 0, 4},		// Nível 2
-{7, 6, 2, 6, 0, 0, 4},		// Nível 3
-{8, 2, 3, 6, 0, 0, 4},		// Nível 4
-{1, 4, 4, 6, 0, 0, 4},		// Nível 5
-{17,10,4,10,17,0,0},      // Game over
-{31,31,31,31,31,31,31}};	// Vitória
+static char Imagens[NR_IMAGENS][NR_LINHAS - 1] = 
+{{3, 2, 1, 6, 0, 0},		// Nível 1
+{4, 3, 2, 6, 0, 0},		// Nível 2
+{7, 6, 2, 6, 0, 0},		// Nível 3
+{8, 2, 3, 6, 0, 0},		// Nível 4
+{1, 4, 4, 6, 0, 0},		// Nível 5
+{17,10,4,10,17,0},      // Game over
+{31,31,31,31,31,31}};	// Vitória
 /********************************/
 
 /*	Vetor para ativar as linhas do display	*/
@@ -68,7 +68,7 @@ static char ImagemY[NR_LINHAS] =
 void desenharNovaImagem()
 {
    int i;				
-   for (i = 0; i < POS_JOGADOR; i++)
+   for (i = 0; i < POS_JOGADOR - 1; i++)
       ImagemX[i] = Imagens[ImagemAtual][i];		//Atualiza a linha com a nova imagem
 }
 /************************************************/

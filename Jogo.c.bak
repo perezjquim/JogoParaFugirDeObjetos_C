@@ -90,7 +90,7 @@ void moverObstaculos()
 /*	Função para verificar se há colisão entre o jogador e um obstáculo	*/
 void verificarVidasJogador(void)
 {
-	if((ImagemX[POS_JOGADOR] & ImagemX[POS_JOGADOR - 1]) != LINHA_VAZIA) //Se houver "interseção" (colisão)
+	if((ImagemX[POS_JOGADOR] & ImagemX[POS_JOGADOR - 1])) //Se houver "interseção" (colisão)
 		VidasRestantes--;																									 //Decrementa a quantidade de vidas restantes
 }
 /************************************************************************/

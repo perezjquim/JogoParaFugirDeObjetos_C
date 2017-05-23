@@ -1,4 +1,4 @@
-C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 17:39:55 PAGE 1   
+C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 17:42:04 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE JOGO
@@ -60,16 +60,16 @@ line level    source
   49          /**********************/
   50          
   51          /*  Conjunto de imagens do jogo */
-  52          static char Imagens[NR_IMAGENS][NR_LINHAS] = 
-  53          {{3, 2, 1, 6, 0, 0, 4},   // Nível 1
-C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 17:39:55 PAGE 2   
+  52          static char Imagens[NR_IMAGENS][NR_LINHAS - 1] = 
+  53          {{3, 2, 1, 6, 0, 0},    // Nível 1
+C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 17:42:04 PAGE 2   
 
-  54          {4, 3, 2, 6, 0, 0, 4},    // Nível 2
-  55          {7, 6, 2, 6, 0, 0, 4},    // Nível 3
-  56          {8, 2, 3, 6, 0, 0, 4},    // Nível 4
-  57          {1, 4, 4, 6, 0, 0, 4},    // Nível 5
-  58          {17,10,4,10,17,0,0},      // Game over
-  59          {31,31,31,31,31,31,31}};  // Vitória
+  54          {4, 3, 2, 6, 0, 0},   // Nível 2
+  55          {7, 6, 2, 6, 0, 0},   // Nível 3
+  56          {8, 2, 3, 6, 0, 0},   // Nível 4
+  57          {1, 4, 4, 6, 0, 0},   // Nível 5
+  58          {17,10,4,10,17,0},      // Game over
+  59          {31,31,31,31,31,31}}; // Vitória
   60          /********************************/
   61          
   62          /*  Vetor para ativar as linhas do display  */
@@ -81,7 +81,7 @@ line level    source
   68          void desenharNovaImagem()
   69          {
   70   1         int i;       
-  71   1         for (i = 0; i < POS_JOGADOR; i++)
+  71   1         for (i = 0; i < POS_JOGADOR - 1; i++)
   72   1            ImagemX[i] = Imagens[ImagemAtual][i];   //Atualiza a linha com a nova imagem
   73   1      }
   74          /************************************************/
@@ -126,7 +126,7 @@ line level    source
  113          
  114          /*  Função de controlo para os obstáculos (que é feita a cada segundo)  */
  115          /*  (verificar se há colisão e movê-los para baixo)                     */
-C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 17:39:55 PAGE 3   
+C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 17:42:04 PAGE 3   
 
  116          void verificarObstaculos() interrupt 1
  117          { 
@@ -190,7 +190,7 @@ line level    source
  175   1         IT0 = 1;                           // Ext0 detectada na transição descendente
  176   1         IT1 = 1;                           // Ext1 detectada na transição descendente
  177   1         TR0 = 1;                           // Inicia timer 0
-C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 17:39:55 PAGE 4   
+C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 17:42:04 PAGE 4   
 
  178   1         TR1 = 1;                           // Inicia timer 1
  179   1         LinhaAtual = 0;                    // Indica que é para mostrar a primeira linha
@@ -254,7 +254,7 @@ line level    source
  237   1        
  238   1        jogar(DIFICULDADE1);      //Nível 1 do jogo
  239   1        jogar(DIFICULDADE2);      //Nível 2 do jogo
-C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 17:39:55 PAGE 5   
+C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 17:42:04 PAGE 5   
 
  240   1        jogar(DIFICULDADE3);      //Nível 3 do jogo
  241   1        jogar(DIFICULDADE4);      //Nível 4 do jogo
@@ -273,7 +273,7 @@ MODULE INFORMATION:   STATIC OVERLAYABLE
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     70    ----
+   DATA SIZE        =     63    ----
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
