@@ -11,11 +11,12 @@ sbit Direita = P3^3;
 #define NR_LINHAS	7		// N?mero total de linhas
 #define TEMPO_HIGH	0x3c	 	// Byte mais significativo do timer 0 - 50 ms (12MHz)
 #define TEMPO_LOW	0xaf	 	// Byte menos significativo do timer 0 - 50 ms (12MHz)
-#define TEMPO_1SEGUNDO 20		// Tempo do timer 0 para medir 1 s (20x50 ms)
 #define TEMPO_T1 0x70	   	//0x70 Tempo do timer 1 - 112 us (12MHz)
-#define NR_IMAGENS 10		// N?mero de imagens
+#define NR_IMAGENS 7		// N?mero de imagens
 #define VAZIO 0xFF
 #define INTERRUPCOES_ESTADO_INICIAL 143
+#define GAMEOVER 5
+#define VICTORY 6
 
 #define X_MIN 0
 #define X_MAX 4
@@ -23,24 +24,22 @@ sbit Direita = P3^3;
 #define Y_MAX 6
 #define X_INICIAL 2
 #define Y_INICIAL 0
-#define VIDAS_INICIAL 2
-#define TEMPO_NIVEL 9
-#define DIFICULDADE1 1500
-#define DIFICULDADE2 1200
-#define DIFICULDADE3 900
-#define DIFICULDADE4 600
-#define DIFICULDADE5 50
+#define VIDAS_INICIAL 3
+#define DIFICULDADE1 20
+#define DIFICULDADE2 18
+#define DIFICULDADE3 15
+#define DIFICULDADE4 10
+#define DIFICULDADE5 7
 
-char pxJogador;
 char ImagemAtual;			// Vari?vel com o n?mero da imagem
 char LinhaAtual;			// Vari?vel para guardar o n?mero de linha
-char TempoAntesDeRedesenhar; 			// Vari?vel para medir 1 s (20x50 ms)
 char ImagemX[NR_LINHAS];	// Display com 7 valores
-char ObstaculosInicio;
-char nivel = 1;
 
-int vidasRestantes;		//vidas restantes do jogador
-int tempoRestante;						//tempo restante para o nível acabar
+char VidasRestantes;		//vidas restantes do jogador
+char TempoObstaculos; 			// Vari?vel para medir 1 s (20x50 ms)
+char DificuldadeAtual;
+char ObstaculosInicio;
+char NivelAtual = 1;
 
 static char Imagens[NR_IMAGENS][NR_LINHAS] = 
 {{3, 2, 1, 6, 0, 0, 4},		// Nível 1
@@ -49,27 +48,23 @@ static char Imagens[NR_IMAGENS][NR_LINHAS] =
 {8, 2, 3, 6, 0, 0, 4},		// Nível 4
 {1, 4, 4, 6, 0, 0, 4},		// Nível 5
 
-{0, 0, 0, 0, 0, 0, 4},		// Imagem 2
-{0, 0, 0, 0, 0, 0, 4},		// Imagem 3
-{0, 0, 0, 0, 0, 0, 4},		// Imagem 1
-{0, 0, 0, 0, 0, 0, 4},		// Imagem 2
-{0, 0, 0, 0, 0, 0, 4}};		// Imagem 3
+{17,10,4,10,17,0,0},      // Game over
+{31,31,31,31,31,31,31}};		// Vitória
 static char ImagemY[NR_LINHAS] = 
 {254, 253, 251, 247, 239, 223, 191};
 
 void redesenharEcra()
 {
    int i;				
-   for (i = 0; i <= 5; i++)
+   for (i = 0; i < NR_LINHAS - 1; i++)
       ImagemX[i] = Imagens[ImagemAtual][i];
 }
 void moverObstaculos()
 {
 	int i;
-	char obstaculo;
-	for (i = 5; i > 0 ; i--)
+	for (i = NR_LINHAS - 2; i > 0 ; i--)
 			ImagemX[i] = ImagemX[i-1];
-	if(ObstaculosInicio < 5)
+	if(ObstaculosInicio < NR_LINHAS - 1)
 	{
 		ImagemX[ObstaculosInicio] = 0;
 		ObstaculosInicio++;
@@ -77,8 +72,8 @@ void moverObstaculos()
 }
 void verificarVidasJogador(void)
 {
-	if(ImagemX[6] & ImagemX[5] != 0)
-		vidasRestantes--;
+	if((ImagemX[6] & ImagemX[5]) != 0)
+		VidasRestantes--;
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -86,29 +81,26 @@ void verificarVidasJogador(void)
 void moverJogadorEsquerda() interrupt 0
 {
 	if(ImagemX[6] != 16)
-		ImagemX[6] /= 2; // shift left
+		ImagemX[6] *= 2; // shift left
 }
 
 void moverJogadorDireita() interrupt 2
 {
 	if(ImagemX[6] != 1)
-		ImagemX[6] *= 2; // shift right
+		ImagemX[6] /= 2; // shift right
 }
 
 void verificarObstaculos() interrupt 1
 { 
-	 //verificarVidasJogador();
-
    TH0 = TEMPO_HIGH;		// Timer 0 = 50 ms
    TL0 = TEMPO_LOW;		// Verifica se j? passou 1 segundo 
-   TempoAntesDeRedesenhar--;			
-   if (TempoAntesDeRedesenhar == 0)		// Verifica se o tempo terminou
+   TempoObstaculos--;			
+   if (TempoObstaculos == 0)		// Verifica se o tempo terminou
    {
-      TempoAntesDeRedesenhar = TEMPO_1SEGUNDO;		// Actualiza a vari?vel tempo
+		 	verificarVidasJogador();
+      TempoObstaculos = DificuldadeAtual;		// Actualiza a vari?vel tempo
 			moverObstaculos();
-		  tempoRestante--;
    }
-
 }
 
 void varrerDisplay(void) interrupt 3
@@ -125,7 +117,7 @@ void varrerDisplay(void) interrupt 3
 void inicializarObstaculos()
 {
 	 ObstaculosInicio = 0;
-	 ImagemAtual = nivel - 1;			// Imagem inicial
+	 ImagemAtual = NivelAtual - 1;			// Imagem inicial
    redesenharEcra();			// Chama rotina para mostrar imagem no display
 }
 
@@ -142,7 +134,6 @@ void ligarInterrupcoes(void)
    TL0 = TEMPO_LOW; 
    TH1 = TEMPO_T1;			// Timer 1 = 112 us
    TL1 = TEMPO_T1; 
-   TempoAntesDeRedesenhar = TEMPO_1SEGUNDO;   		// Inicializa vari?vel para medir 1 s
    IP = 0;				// N?o altera as prioridades
    IE = INTERRUPCOES_ESTADO_INICIAL;			// Activa as interrup??es - #10001111b:
    IT0 = 1;			// Ext0 detectada na transi??o descendente
@@ -152,50 +143,51 @@ void ligarInterrupcoes(void)
    LinhaAtual = 0;	     		// Indica que ? para mostrar a primeira linha
    Input = VAZIO;			// P3 ? uma porta de entrada
 }
-
-void desligarInterrupcoes(void)
+void gameOver()
 {
-	IT0 = 0;
-	IT1 = 0;
-	TR0 = 0;
-	TR1 = 0;
+	ImagemAtual = GAMEOVER;
+	redesenharEcra();
+	for(;;);
 }
-
+void victory()
+{
+	ImagemAtual = VICTORY;
+	redesenharEcra();
+	for(;;);
+}
 
 void jogar(double dificuldade)
 {
+	DificuldadeAtual = dificuldade;
+	TempoObstaculos = DificuldadeAtual;
+	
 	inicializarJogador();
 	inicializarObstaculos();
-	ligarInterrupcoes();
 	
-	vidasRestantes = VIDAS_INICIAL;		//vidas restantes do jogador é inicializada
-	tempoRestante = TEMPO_NIVEL;
+	VidasRestantes = VIDAS_INICIAL;		//vidas restantes do jogador é inicializada
 
 	//Ciclo do jogo propriamente dito
-	while(vidasRestantes && tempoRestante) {}
-		
-	nivel++;
-		
-	return;
+	while(VidasRestantes && ObstaculosInicio < NR_LINHAS - 1) {}
 	
-	if(vidasRestantes)
+	if(VidasRestantes)
 	{
-		nivel++;
+		NivelAtual++;
 		return;
 	}
 	
-	while(1){}
-	
+	gameOver();
 }
 
-void main(void)
+void main()
 {
+	ligarInterrupcoes();
+	
 	jogar(DIFICULDADE1);			//Nível 1 do jogo
 	jogar(DIFICULDADE2);			//Nível 2 do jogo
 	jogar(DIFICULDADE3);			//Nível 3 do jogo
 	jogar(DIFICULDADE4);			//Nível 4 do jogo
 	jogar(DIFICULDADE5);			//Nível 5 do jogo
 
-  for(;;);
+	victory();
 }
 /*******************************************************************************/
