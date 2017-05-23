@@ -1,4 +1,4 @@
-C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 17:44:11 PAGE 1   
+C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 22:55:21 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE JOGO
@@ -29,13 +29,13 @@ line level    source
   19          /********************************************/
   20          
   21          /*  Constantes auxiliares (jogo)  */
-  22          #define GAMEOVER 5            // ID da imagem do gameover
+  22          #define GAMEOVER 5            // ID da ima gem do gameover
   23          #define VICTORY 6             // ID da imagem da vitória
   24          #define NR_IMAGENS 7          // Número de imagens
   25          #define NR_LINHAS 7           // Número total de linhas
   26          #define POS_JOGADOR 6         // Coordenada Y do jogador (última linha)
-  27          #define POS_INICIAL 4         // Posição inicial do jogador (no meio da linha)
-  28          #define VIDAS_INICIAL 3       // Nº de vidas para o jogador (3 vidas)
+  27          #define POS_JOGADOR_INICIAL 4         // Posição inicial do jogador (no meio da linha)
+  28          #define VIDAS_INICIAL 4       // Nº de vidas para o jogador (3 vidas)
   29          #define DIFICULDADE1 20       // Velocidade a que descem os obstáculos (dificuldade)
   30          #define DIFICULDADE2 18       // Velocidade a que descem os obstáculos (dificuldade)
   31          #define DIFICULDADE3 15       // Velocidade a que descem os obstáculos (dificuldade)
@@ -62,7 +62,7 @@ line level    source
   51          /*  Conjunto de imagens do jogo */
   52          static char Imagens[NR_IMAGENS][NR_LINHAS - 1] = 
   53          {{3, 2, 1, 6, 0, 0},    // Nível 1
-C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 17:44:11 PAGE 2   
+C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 22:55:21 PAGE 2   
 
   54          {4, 3, 2, 6, 0, 0},   // Nível 2
   55          {7, 6, 2, 6, 0, 0},   // Nível 3
@@ -101,9 +101,9 @@ line level    source
   88          /******************************************************************/
   89          
   90          /*  Função para verificar se há colisão entre o jogador e um obstáculo  */
-  91          void verificarVidasJogador(void)
+  91          void verificarColisoes(void)
   92          {
-  93   1        if((ImagemX[POS_JOGADOR] & ImagemX[POS_JOGADOR - 1])) //Se houver "interseção" (colisão)
+  93   1        if(ImagemX[POS_JOGADOR] & ImagemX[POS_JOGADOR - 1]) //Se houver "interseção" (colisão)
   94   1          VidasRestantes--;                                                  //Decrementa a quantidade de vidas restantes
   95   1      }
   96          /************************************************************************/
@@ -126,7 +126,7 @@ line level    source
  113          
  114          /*  Função de controlo para os obstáculos (que é feita a cada segundo)  */
  115          /*  (verificar se há colisão e movê-los para baixo)                     */
-C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 17:44:11 PAGE 3   
+C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 22:55:21 PAGE 3   
 
  116          void verificarObstaculos() interrupt 1
  117          { 
@@ -140,7 +140,7 @@ line level    source
  125   1         // Passa às verificações e ações dos obstáculos
  126   1         if (TempoObstaculos == 0)    
  127   1         {
- 128   2            verificarVidasJogador();              // Verifica se há colisão entre o jogador e um obstáculo
+ 128   2            verificarColisoes();              // Verifica se há colisão entre o jogador e um obstáculo
  129   2            TempoObstaculos = DificuldadeAtual;   // Reinicializa a contagem
  130   2            moverObstaculos();                    // Move os obstáculos para baixo
  131   2         }
@@ -173,7 +173,7 @@ line level    source
  158          /*  Função para desenhar pela primeira vez o jogador (na sua posição inicial) */
  159          void inicializarJogador()
  160          {
- 161   1         ImagemX[POS_JOGADOR] = POS_INICIAL;  //O jogador fica na sua posição inicial
+ 161   1         ImagemX[POS_JOGADOR] = POS_JOGADOR_INICIAL;  //O jogador fica na sua posição inicial
  162   1      }
  163          /******************************************************************************/
  164          
@@ -190,7 +190,7 @@ line level    source
  175   1         IT0 = 1;                           // Ext0 detectada na transição descendente
  176   1         IT1 = 1;                           // Ext1 detectada na transição descendente
  177   1         TR0 = 1;                           // Inicia timer 0
-C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 17:44:11 PAGE 4   
+C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 22:55:21 PAGE 4   
 
  178   1         TR1 = 1;                           // Inicia timer 1
  179   1         LinhaAtual = 0;                    // Indica que é para mostrar a primeira linha
@@ -198,78 +198,86 @@ line level    source
  181   1      }
  182          /**************************************************************/
  183          
- 184          /* Função para mostrar a imagem de GameOver (quando o jogador perde todas as vidas num nível) */
- 185          void gameOver()
+ 184          /*  Função para desligar as interrupções */
+ 185          void desligarInterrupcoes(void)
  186          {
- 187   1        ImagemAtual = GAMEOVER;   //Busca a imagem do GameOver
- 188   1        desenharNovaImagem();     //Desenha essa imagem
- 189   1        for(;;);                  //Fica em loop
- 190   1      }
- 191          /**********************************************************************************************/
- 192          
- 193          /* Função para mostrar a imagem da vitória (quando o jogador passa com sucesso por todos os níveis) */
- 194          void victory()
- 195          {
- 196   1        ImagemAtual = VICTORY;    //Busca a imagem da vitória
- 197   1        desenharNovaImagem();     //Desenha essa imagem
- 198   1        for(;;);                  //Fica em loop
- 199   1      }
- 200          /****************************************************************************************************/
- 201          
- 202          /* Função para jogar um dado nível do jogo */
- 203          void jogar(double dificuldade)
- 204          {
- 205   1        //Busca no argumento 'dificuldade' o tempo que demora os obstáculos a descer
- 206   1        DificuldadeAtual = dificuldade;     
- 207   1        TempoObstaculos = DificuldadeAtual;
- 208   1        
- 209   1        inicializarJogador();             //O jogador é inicializado no display
- 210   1        inicializarObstaculos();          //Os obstáculos do nível são inicializados no display
- 211   1        
- 212   1        VidasRestantes = VIDAS_INICIAL;   //vidas restantes do jogador é inicializada
- 213   1      
- 214   1        //Ciclo do jogo propriamente dito
- 215   1        while(VidasRestantes && ObstaculosInicio < NR_LINHAS - 1) {}
- 216   1        
- 217   1        //Caso tenha acabado o nível com sucesso,
- 218   1        //Passa para o próximo nível
- 219   1        if(VidasRestantes)
- 220   1        {
- 221   2          NivelAtual++;   
- 222   2          return;
- 223   2        }
- 224   1        
- 225   1        //Caso contrário,
- 226   1        //Mostra a imagem de GameOver
- 227   1        gameOver();
- 228   1      }
- 229          /*******************************************/
- 230          
- 231          /********************************************/
- 232          /*            Função principal              */
- 233          /********************************************/
- 234          void main()
- 235          {
- 236   1        ligarInterrupcoes();      //Liga as interrupções
- 237   1        
- 238   1        jogar(DIFICULDADE1);      //Nível 1 do jogo
- 239   1        jogar(DIFICULDADE2);      //Nível 2 do jogo
-C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 17:44:11 PAGE 5   
+ 187   1        TR0 = 0;                  // Desliga o timer do verificarObstáculos (que traz os obstáculos para baixo)
+ 188   1      }
+ 189          /*****************************************/
+ 190          
+ 191          /* Função para mostrar a imagem de GameOver (quando o jogador perde todas as vidas num nível) */
+ 192          void gameOver()
+ 193          {
+ 194   1        ImagemAtual = GAMEOVER;   //Busca a imagem do GameOver
+ 195   1        desenharNovaImagem();     //Desenha essa imagem
+ 196   1        desligarInterrupcoes();
+ 197   1        for(;;);                  //Fica em loop
+ 198   1      }
+ 199          /**********************************************************************************************/
+ 200          
+ 201          /* Função para mostrar a imagem da vitória (quando o jogador passa com sucesso por todos os níveis) */
+ 202          void victory()
+ 203          {
+ 204   1        ImagemAtual = VICTORY;    //Busca a imagem da vitória
+ 205   1        desenharNovaImagem();     //Desenha essa imagem
+ 206   1        desligarInterrupcoes();
+ 207   1        for(;;);                  //Fica em loop
+ 208   1      }
+ 209          /****************************************************************************************************/
+ 210          
+ 211          /* Função para jogar um dado nível do jogo */
+ 212          void jogar(double dificuldade)
+ 213          {
+ 214   1        //Busca no argumento 'dificuldade' o tempo que demora os obstáculos a descer
+ 215   1        DificuldadeAtual = dificuldade;     
+ 216   1        TempoObstaculos = DificuldadeAtual;
+ 217   1        
+ 218   1        inicializarJogador();             //O jogador é inicializado no display
+ 219   1        inicializarObstaculos();          //Os obstáculos do nível são inicializados no display
+ 220   1      
+ 221   1        //Ciclo do jogo propriamente dito
+ 222   1        while(VidasRestantes && ObstaculosInicio < NR_LINHAS - 1) {}
+ 223   1        
+ 224   1        //Caso tenha acabado o nível com sucesso,
+ 225   1        //Passa para o próximo nível
+ 226   1        if(VidasRestantes)
+ 227   1        {
+ 228   2          NivelAtual++;   
+ 229   2          return;
+ 230   2        }
+ 231   1        
+ 232   1        //Caso contrário,
+ 233   1        //Mostra a imagem de GameOver
+ 234   1        gameOver();
+ 235   1      }
+ 236          /*******************************************/
+ 237          
+ 238          /********************************************/
+ 239          /*            Função principal              */
+C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 22:55:21 PAGE 5   
 
- 240   1        jogar(DIFICULDADE3);      //Nível 3 do jogo
- 241   1        jogar(DIFICULDADE4);      //Nível 4 do jogo
- 242   1        jogar(DIFICULDADE5);      //Nível 5 do jogo
- 243   1      
- 244   1        //Caso tenha passado por todos os níveis sem perder as vidas todas
- 245   1        //Mostra a imagem da vitória
- 246   1        victory();
- 247   1      }
- 248          /********************************************/
- 249          /********************************************/
+ 240          /********************************************/
+ 241          void main()
+ 242          {
+ 243   1        ligarInterrupcoes();      //Liga as interrupções
+ 244   1        VidasRestantes = VIDAS_INICIAL;   //vidas restantes do jogador é inicializada
+ 245   1        
+ 246   1        jogar(DIFICULDADE1);      //Nível 1 do jogo
+ 247   1        jogar(DIFICULDADE2);      //Nível 2 do jogo
+ 248   1        jogar(DIFICULDADE3);      //Nível 3 do jogo
+ 249   1        jogar(DIFICULDADE4);      //Nível 4 do jogo
+ 250   1        jogar(DIFICULDADE5);      //Nível 5 do jogo
+ 251   1      
+ 252   1        //Caso tenha passado por todos os níveis sem perder as vidas todas
+ 253   1        //Mostra a imagem da vitória
+ 254   1        victory();
+ 255   1      }
+ 256          /********************************************/
+ 257          /********************************************/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    403    ----
+   CODE SIZE        =    412    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----

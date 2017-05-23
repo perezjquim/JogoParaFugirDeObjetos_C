@@ -19,13 +19,13 @@ sbit Input = P3;
 /********************************************/
 
 /*	Constantes auxiliares (jogo)	*/
-#define GAMEOVER 5						// ID da imagem do gameover
+#define GAMEOVER 5						// ID da ima gem do gameover
 #define VICTORY 6							// ID da imagem da vitória
 #define NR_IMAGENS 7					// Número de imagens
 #define NR_LINHAS	7						// Número total de linhas
 #define POS_JOGADOR 6					// Coordenada Y do jogador (última linha)
-#define POS_INICIAL 4					// Posição inicial do jogador (no meio da linha)
-#define VIDAS_INICIAL 3				// Nº de vidas para o jogador (3 vidas)
+#define POS_JOGADOR_INICIAL 4					// Posição inicial do jogador (no meio da linha)
+#define VIDAS_INICIAL 4				// Nº de vidas para o jogador (3 vidas)
 #define DIFICULDADE1 20				// Velocidade a que descem os obstáculos (dificuldade)
 #define DIFICULDADE2 18				// Velocidade a que descem os obstáculos (dificuldade)
 #define DIFICULDADE3 15 			// Velocidade a que descem os obstáculos (dificuldade)
@@ -88,7 +88,7 @@ void moverObstaculos()
 /******************************************************************/
 
 /*	Função para verificar se há colisão entre o jogador e um obstáculo	*/
-void verificarVidasJogador(void)
+void verificarColisoes(void)
 {
 	if(ImagemX[POS_JOGADOR] & ImagemX[POS_JOGADOR - 1]) //Se houver "interseção" (colisão)
 		VidasRestantes--;																									 //Decrementa a quantidade de vidas restantes
@@ -125,7 +125,7 @@ void verificarObstaculos() interrupt 1
 	 // Passa às verificações e ações dos obstáculos
    if (TempoObstaculos == 0)		
    {
-		 	verificarVidasJogador();							// Verifica se há colisão entre o jogador e um obstáculo
+		 	verificarColisoes();							// Verifica se há colisão entre o jogador e um obstáculo
       TempoObstaculos = DificuldadeAtual;		// Reinicializa a contagem
 			moverObstaculos();										// Move os obstáculos para baixo
    }
@@ -158,7 +158,7 @@ void inicializarObstaculos()
 /*	Função para desenhar pela primeira vez o jogador (na sua posição inicial)	*/
 void inicializarJogador()
 {
-	 ImagemX[POS_JOGADOR] = POS_INICIAL;	//O jogador fica na sua posição inicial
+	 ImagemX[POS_JOGADOR] = POS_JOGADOR_INICIAL;	//O jogador fica na sua posição inicial
 }
 /******************************************************************************/
 
@@ -181,11 +181,19 @@ void ligarInterrupcoes(void)
 }
 /**************************************************************/
 
+/*	Função para desligar as interrupções */
+void desligarInterrupcoes(void)
+{
+	TR0 = 0;									// Desliga o timer do verificarObstáculos (que traz os obstáculos para baixo)
+}
+/*****************************************/
+
 /* Função para mostrar a imagem de GameOver (quando o jogador perde todas as vidas num nível)	*/
 void gameOver()
 {
 	ImagemAtual = GAMEOVER;		//Busca a imagem do GameOver
 	desenharNovaImagem();			//Desenha essa imagem
+	desligarInterrupcoes();
 	for(;;);									//Fica em loop
 }
 /**********************************************************************************************/
@@ -195,6 +203,7 @@ void victory()
 {
 	ImagemAtual = VICTORY;		//Busca a imagem da vitória
 	desenharNovaImagem();			//Desenha essa imagem
+	desligarInterrupcoes();
 	for(;;);									//Fica em loop
 }
 /****************************************************************************************************/
@@ -208,8 +217,6 @@ void jogar(double dificuldade)
 	
 	inicializarJogador();							//O jogador é inicializado no display
 	inicializarObstaculos();					//Os obstáculos do nível são inicializados no display
-	
-	VidasRestantes = VIDAS_INICIAL;		//vidas restantes do jogador é inicializada
 
 	//Ciclo do jogo propriamente dito
 	while(VidasRestantes && ObstaculosInicio < NR_LINHAS - 1) {}
@@ -234,6 +241,7 @@ void jogar(double dificuldade)
 void main()
 {
 	ligarInterrupcoes();			//Liga as interrupções
+	VidasRestantes = VIDAS_INICIAL;		//vidas restantes do jogador é inicializada
 	
 	jogar(DIFICULDADE1);			//Nível 1 do jogo
 	jogar(DIFICULDADE2);			//Nível 2 do jogo
