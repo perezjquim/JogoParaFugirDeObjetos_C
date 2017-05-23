@@ -68,7 +68,7 @@ static char ImagemY[NR_LINHAS] =
 void desenharNovaImagem()
 {
    int i;				
-   for (i = 0; i < POS_JOGADOR - 1; i++)
+   for (i = 0; i < POS_JOGADOR; i++)
       ImagemX[i] = Imagens[ImagemAtual][i];		//Atualiza a linha com a nova imagem
 }
 /************************************************/
@@ -90,7 +90,7 @@ void moverObstaculos()
 /*	Função para verificar se há colisão entre o jogador e um obstáculo	*/
 void verificarVidasJogador(void)
 {
-	if((ImagemX[POS_JOGADOR] & ImagemX[POS_JOGADOR - 1])) //Se houver "interseção" (colisão)
+	if(ImagemX[POS_JOGADOR] & ImagemX[POS_JOGADOR - 1]) //Se houver "interseção" (colisão)
 		VidasRestantes--;																									 //Decrementa a quantidade de vidas restantes
 }
 /************************************************************************/
