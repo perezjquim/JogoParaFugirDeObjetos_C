@@ -4,6 +4,8 @@
 #include <stdlib.h>
 
 sbit Input = P3;
+sbit Esquerda = P3^2;
+sbit Direita = P3^3;
 #define DisplayX P2
 #define DisplayY P1
 #define NR_LINHAS	7		// N?mero total de linhas
@@ -34,18 +36,22 @@ char ImagemAtual;			// Vari?vel com o n?mero da imagem
 char LinhaAtual;			// Vari?vel para guardar o n?mero de linha
 char TempoAntesDeRedesenhar; 			// Vari?vel para medir 1 s (20x50 ms)
 char ImagemX[NR_LINHAS];	// Display com 7 valores
+char ObstaculosInicio;
+
+int vidasRestantes;		//vidas restantes do jogador
+int tempoRestante;						//tempo restante para o nível acabar
 
 static char Imagens[NR_IMAGENS][NR_LINHAS] = 
-{{0, 1, 2, 3, 4, 5, 6},		// Imagem 0
-{7, 8, 9, 10, 11, 12, 13},		// Imagem 1
-{14, 15, 16, 17, 18, 19, 20},		// Imagem 2
-{30, 1, 1, 30, 1, 1, 30},		// Imagem 3
-{17, 17, 17, 15, 1, 1, 1},		// Imagem 4
-{31, 16, 16, 14, 1, 1, 30},		// Imagem 5
-{16, 16, 16, 30, 17, 17, 14},		//Imagem 6
-{30, 1, 1, 2, 4, 8, 16},			// Imagem 7
-{14, 17, 17, 14, 17, 17, 14},		// Imagem 8
-{14, 17, 17, 15, 1, 1, 1}};		// Imagem 9
+{{3, 2, 1, 0, 0, 0, 4},		// Imagem 0
+{0, 0, 0, 0, 0, 0, 4},		// Imagem 1
+{0, 0, 0, 0, 0, 0, 4},		// Imagem 2
+{0, 0, 0, 0, 0, 0, 4},		// Imagem 3
+{0, 0, 0, 0, 0, 0, 4},		// Imagem 1
+{0, 0, 0, 0, 0, 0, 4},		// Imagem 2
+{0, 0, 0, 0, 0, 0, 4},		// Imagem 3
+{0, 0, 0, 0, 0, 0, 4},		// Imagem 1
+{0, 0, 0, 0, 0, 0, 4},		// Imagem 2
+{0, 0, 0, 0, 0, 0, 4}};		// Imagem 3
 static char ImagemY[NR_LINHAS] = 
 {254, 253, 251, 247, 239, 223, 191};
 
@@ -57,8 +63,18 @@ void redesenharEcra()
       ImagemX[i] = Imagens[ImagemAtual][i];
 }
 
-
-void Trata_Timer0() interrupt 1
+void moverObstaculos()
+{
+	int i;
+	char obstaculo;
+	for (i = NR_LINHAS - 2; i > 0 ; i--)
+	{
+			ImagemX[i] = ImagemX[i-1];
+	}
+	ImagemX[ObstaculosInicio] = 0;
+	ObstaculosInicio++;
+}
+void verificarObstaculos() interrupt 1
 {
    TH0 = TEMPO_HIGH;		// Timer 0 = 50 ms
    TL0 = TEMPO_LOW;		// Verifica se j? passou 1 segundo 
@@ -66,11 +82,7 @@ void Trata_Timer0() interrupt 1
    if (TempoAntesDeRedesenhar == 0)		// Verifica se o tempo terminou
    {
       TempoAntesDeRedesenhar = TEMPO_1SEGUNDO;		// Actualiza a vari?vel tempo
-			if (ImagemAtual == NR_IMAGENS - 1) 	
-				 ImagemAtual = 0;
-			else
-				 ImagemAtual++;
-			redesenharEcra();	// Mostra o vector
+			moverObstaculos();
    }
 }
 
@@ -83,15 +95,19 @@ void varrerDisplay(void) interrupt 3
    if (LinhaAtual == NR_LINHAS) 	// Verifica se ? a ?ltima linha
 		LinhaAtual = 0;		// Para a linha inicial
 }
+
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 void inicializarDisplay(void)
 {
 	 ImagemAtual = 0;			// Imagem inicial
    redesenharEcra();			// Chama rotina para mostrar imagem no display
+	 ObstaculosInicio = 0;
 }
 
 void ligarInterrupcoes(void)
 {
-	TMOD = 33;			// Timer 0 de 16 bits - #00100001b
+	 TMOD = 33;			// Timer 0 de 16 bits - #00100001b
    TH0 = TEMPO_HIGH;			// Timer 0 = 50 ms
    TL0 = TEMPO_LOW; 
    TH1 = TEMPO_T1;			// Timer 1 = 112 us
@@ -105,6 +121,30 @@ void ligarInterrupcoes(void)
    TR1 = 1;			// Inicia timer 1
    LinhaAtual = 0;	     		// Indica que ? para mostrar a primeira linha
    Input = VAZIO;			// P3 ? uma porta de entrada
+}
+/////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+
+void verificarControlos(void)
+{
+		if(!Esquerda)				//Se for clicado para ir para a esquerda
+		{
+//			if(px > X_MIN)		//Se não tiver no limite esquerdo do DisplayY
+//				moverJogadorEsquerda();	//Anda para a esquerda
+			while(!Esquerda) {}		//Espera o 'largar' do botão
+		}
+		if(!Direita)				//Se for clicado para ir para a direita
+		{
+//			if(px < X_MAX)		//Se não tiver no limite direito do DisplayY
+//				moverJogadorDireita();	//Anda para a direita
+			while(!Direita) {}		//Espera o 'largar' do botão
+		}
+}
+
+void verificarVidasJogador(void)
+{
+//	if(estaLigado(px,Y_MIN+1))
+		vidasRestantes--;
 }
 
 void jogar(double dificuldade)
@@ -121,7 +161,7 @@ void jogar(double dificuldade)
 		//moverObstaculos();					//desenha novos objetos e arrasta os atuais para baixo
 		//verificarVidasJogador();		//verifica se o jogador bate num obstáculo (decrementando uma vida nesse caso)
 		//delay(dificuldade);
-		//tempoRestante--;
+		tempoRestante--;
 	}
 	
 	if(vidasRestantes)

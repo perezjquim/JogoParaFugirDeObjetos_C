@@ -1,4 +1,4 @@
-C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 00:43:51 PAGE 1   
+C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 01:09:36 PAGE 1   
 
 
 C51 COMPILER V9.56.0.0, COMPILATION OF MODULE JOGO
@@ -14,168 +14,206 @@ line level    source
    4          #include <stdlib.h>
    5          
    6          sbit Input = P3;
-   7          #define DisplayX P2
-   8          #define DisplayY P1
-   9          #define NR_LINHAS 7   // N?mero total de linhas
-  10          #define TEMPO_HIGH  0x3c    // Byte mais significativo do timer 0 - 50 ms (12MHz)
-  11          #define TEMPO_LOW 0xaf    // Byte menos significativo do timer 0 - 50 ms (12MHz)
-  12          #define TEMPO_1SEGUNDO 20   // Tempo do timer 0 para medir 1 s (20x50 ms)
-  13          #define TEMPO_T1 0x70     //0x70 Tempo do timer 1 - 112 us (12MHz)
-  14          #define NR_IMAGENS 10   // N?mero de imagens
-  15          #define VAZIO 0xFF
-  16          #define INTERRUPCOES_ESTADO_INICIAL 143
-  17          
-  18          #define X_MIN 0
-  19          #define X_MAX 4
-  20          #define Y_MIN 0
-  21          #define Y_MAX 6
-  22          #define X_INICIAL 2
-  23          #define Y_INICIAL 0
-  24          #define VIDAS_INICIAL 2
-  25          #define TEMPO_NIVEL 9
-  26          #define DIFICULDADE1 1500
-  27          #define DIFICULDADE2 1200
-  28          #define DIFICULDADE3 900
-  29          #define DIFICULDADE4 600
-  30          #define DIFICULDADE5 50
-  31          
-  32          
-  33          char ImagemAtual;     // Vari?vel com o n?mero da imagem
-  34          char LinhaAtual;      // Vari?vel para guardar o n?mero de linha
-  35          char TempoAntesDeRedesenhar;      // Vari?vel para medir 1 s (20x50 ms)
-  36          char ImagemX[NR_LINHAS];  // Display com 7 valores
-  37          
-  38          int vidasRestantes;   //vidas restantes do jogador
-  39          int tempoRestante;            //tempo restante para o nível acabar
+   7          sbit Esquerda = P3^2;
+   8          sbit Direita = P3^3;
+   9          #define DisplayX P2
+  10          #define DisplayY P1
+  11          #define NR_LINHAS 7   // N?mero total de linhas
+  12          #define TEMPO_HIGH  0x3c    // Byte mais significativo do timer 0 - 50 ms (12MHz)
+  13          #define TEMPO_LOW 0xaf    // Byte menos significativo do timer 0 - 50 ms (12MHz)
+  14          #define TEMPO_1SEGUNDO 20   // Tempo do timer 0 para medir 1 s (20x50 ms)
+  15          #define TEMPO_T1 0x70     //0x70 Tempo do timer 1 - 112 us (12MHz)
+  16          #define NR_IMAGENS 10   // N?mero de imagens
+  17          #define VAZIO 0xFF
+  18          #define INTERRUPCOES_ESTADO_INICIAL 143
+  19          
+  20          #define X_MIN 0
+  21          #define X_MAX 4
+  22          #define Y_MIN 0
+  23          #define Y_MAX 6
+  24          #define X_INICIAL 2
+  25          #define Y_INICIAL 0
+  26          #define VIDAS_INICIAL 2
+  27          #define TEMPO_NIVEL 9
+  28          #define DIFICULDADE1 1500
+  29          #define DIFICULDADE2 1200
+  30          #define DIFICULDADE3 900
+  31          #define DIFICULDADE4 600
+  32          #define DIFICULDADE5 50
+  33          
+  34          
+  35          char ImagemAtual;     // Vari?vel com o n?mero da imagem
+  36          char LinhaAtual;      // Vari?vel para guardar o n?mero de linha
+  37          char TempoAntesDeRedesenhar;      // Vari?vel para medir 1 s (20x50 ms)
+  38          char ImagemX[NR_LINHAS];  // Display com 7 valores
+  39          char ObstaculosInicio;
   40          
-  41          static char Imagens[NR_IMAGENS][NR_LINHAS] = 
-  42          {{0, 1, 2, 3, 4, 5, 6},   // Imagem 0
-  43          {7, 8, 9, 10, 11, 12, 13},    // Imagem 1
-  44          {14, 15, 16, 17, 18, 19, 20},   // Imagem 2
-  45          {30, 1, 1, 30, 1, 1, 30},   // Imagem 3
-  46          {17, 17, 17, 15, 1, 1, 1},    // Imagem 4
-  47          {31, 16, 16, 14, 1, 1, 30},   // Imagem 5
-  48          {16, 16, 16, 30, 17, 17, 14},   //Imagem 6
-  49          {30, 1, 1, 2, 4, 8, 16},      // Imagem 7
-  50          {14, 17, 17, 14, 17, 17, 14},   // Imagem 8
-  51          {14, 17, 17, 15, 1, 1, 1}};   // Imagem 9
-  52          static char ImagemY[NR_LINHAS] = 
-  53          {254, 253, 251, 247, 239, 223, 191};
-  54          
-C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 00:43:51 PAGE 2   
+  41          int vidasRestantes;   //vidas restantes do jogador
+  42          int tempoRestante;            //tempo restante para o nível acabar
+  43          
+  44          static char Imagens[NR_IMAGENS][NR_LINHAS] = 
+  45          {{3, 2, 1, 0, 0, 0, 4},   // Imagem 0
+  46          {0, 0, 0, 0, 0, 0, 4},    // Imagem 1
+  47          {0, 0, 0, 0, 0, 0, 4},    // Imagem 2
+  48          {0, 0, 0, 0, 0, 0, 4},    // Imagem 3
+  49          {0, 0, 0, 0, 0, 0, 4},    // Imagem 1
+  50          {0, 0, 0, 0, 0, 0, 4},    // Imagem 2
+  51          {0, 0, 0, 0, 0, 0, 4},    // Imagem 3
+  52          {0, 0, 0, 0, 0, 0, 4},    // Imagem 1
+  53          {0, 0, 0, 0, 0, 0, 4},    // Imagem 2
+  54          {0, 0, 0, 0, 0, 0, 4}};   // Imagem 3
+C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 01:09:36 PAGE 2   
 
-  55          
-  56          void redesenharEcra()
-  57          {
-  58   1         int i;       
-  59   1         for (i = 0; i < NR_LINHAS; i++)
-  60   1            ImagemX[i] = Imagens[ImagemAtual][i];
-  61   1      }
-  62          
-  63          
-  64          void Trata_Timer0() interrupt 1
-  65          {
-  66   1         TH0 = TEMPO_HIGH;    // Timer 0 = 50 ms
-  67   1         TL0 = TEMPO_LOW;   // Verifica se j? passou 1 segundo 
-  68   1         TempoAntesDeRedesenhar--;      
-  69   1         if (TempoAntesDeRedesenhar == 0)   // Verifica se o tempo terminou
-  70   1         {
-  71   2            TempoAntesDeRedesenhar = TEMPO_1SEGUNDO;    // Actualiza a vari?vel tempo
-  72   2            if (ImagemAtual == NR_IMAGENS - 1)  
-  73   2               ImagemAtual = 0;
-  74   2            else
-  75   2               ImagemAtual++;
-  76   2            redesenharEcra(); // Mostra o vector
-  77   2         }
-  78   1      }
-  79          
-  80          void varrerDisplay(void) interrupt 3
-  81          {
-  82   1         DisplayY = VAZIO;      // Desliga todas as linhas de sa?da
-  83   1         DisplayX = ImagemX[LinhaAtual];  // Mostra a linha
-  84   1         DisplayY = ImagemY[LinhaAtual];  // Activa a linha
-  85   1         LinhaAtual++;      // Pr?xima linha
-  86   1         if (LinhaAtual == NR_LINHAS)   // Verifica se ? a ?ltima linha
-  87   1          LinhaAtual = 0;   // Para a linha inicial
-  88   1      }
-  89          void inicializarDisplay(void)
-  90          {
-  91   1         ImagemAtual = 0;     // Imagem inicial
-  92   1         redesenharEcra();      // Chama rotina para mostrar imagem no display
-  93   1      }
-  94          
-  95          void ligarInterrupcoes(void)
-  96          {
-  97   1        TMOD = 33;      // Timer 0 de 16 bits - #00100001b
-  98   1         TH0 = TEMPO_HIGH;      // Timer 0 = 50 ms
-  99   1         TL0 = TEMPO_LOW; 
- 100   1         TH1 = TEMPO_T1;      // Timer 1 = 112 us
- 101   1         TL1 = TEMPO_T1; 
- 102   1         TempoAntesDeRedesenhar = TEMPO_1SEGUNDO;       // Inicializa vari?vel para medir 1 s
- 103   1         IP = 0;        // N?o altera as prioridades
- 104   1         IE = INTERRUPCOES_ESTADO_INICIAL;      // Activa as interrup??es - #10001111b:
- 105   1         IT0 = 1;     // Ext0 detectada na transi??o descendente
- 106   1         IT1 = 1;     // Ext1 detectada na transi??o descendente
- 107   1         TR0 = 1;     // Inicia timer 0
- 108   1         TR1 = 1;     // Inicia timer 1
- 109   1         LinhaAtual = 0;          // Indica que ? para mostrar a primeira linha
- 110   1         Input = VAZIO;     // P3 ? uma porta de entrada
- 111   1      }
- 112          
- 113          void jogar(double dificuldade)
- 114          {
- 115   1        vidasRestantes = VIDAS_INICIAL;   //vidas restantes do jogador é inicializada
- 116   1        tempoRestante = TEMPO_NIVEL;
-C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 00:43:51 PAGE 3   
+  55          static char ImagemY[NR_LINHAS] = 
+  56          {254, 253, 251, 247, 239, 223, 191};
+  57          
+  58          
+  59          void redesenharEcra()
+  60          {
+  61   1         int i;       
+  62   1         for (i = 0; i < NR_LINHAS; i++)
+  63   1            ImagemX[i] = Imagens[ImagemAtual][i];
+  64   1      }
+  65          
+  66          void moverObstaculos()
+  67          {
+  68   1        int i;
+  69   1        char obstaculo;
+  70   1        for (i = NR_LINHAS - 2; i > 0 ; i--)
+  71   1            ImagemX[i] = ImagemX[i-1];
+  72   1        ImagemX[ObstaculosInicio] = 0;
+  73   1        ObstaculosInicio++;
+  74   1      }
+*** WARNING C280 IN LINE 69 OF Jogo.c: 'obstaculo': unreferenced local variable
+  75          void verificarObstaculos() interrupt 1
+  76          {
+  77   1         TH0 = TEMPO_HIGH;    // Timer 0 = 50 ms
+  78   1         TL0 = TEMPO_LOW;   // Verifica se j? passou 1 segundo 
+  79   1         TempoAntesDeRedesenhar--;      
+  80   1         if (TempoAntesDeRedesenhar == 0)   // Verifica se o tempo terminou
+  81   1         {
+  82   2            TempoAntesDeRedesenhar = TEMPO_1SEGUNDO;    // Actualiza a vari?vel tempo
+  83   2            moverObstaculos();
+  84   2         }
+  85   1      }
+  86          
+  87          void varrerDisplay(void) interrupt 3
+  88          {
+  89   1         DisplayY = VAZIO;      // Desliga todas as linhas de sa?da
+  90   1         DisplayX = ImagemX[LinhaAtual];  // Mostra a linha
+  91   1         DisplayY = ImagemY[LinhaAtual];  // Activa a linha
+  92   1         LinhaAtual++;      // Pr?xima linha
+  93   1         if (LinhaAtual == NR_LINHAS)   // Verifica se ? a ?ltima linha
+  94   1          LinhaAtual = 0;   // Para a linha inicial
+  95   1      }
+  96          
+  97          ////////////////////////////////////////////////////////////////////////////
+  98          ////////////////////////////////////////////////////////////////////////////
+  99          void inicializarDisplay(void)
+ 100          {
+ 101   1         ImagemAtual = 0;     // Imagem inicial
+ 102   1         redesenharEcra();      // Chama rotina para mostrar imagem no display
+ 103   1         ObstaculosInicio = 0;
+ 104   1      }
+ 105          
+ 106          void ligarInterrupcoes(void)
+ 107          {
+ 108   1         TMOD = 33;     // Timer 0 de 16 bits - #00100001b
+ 109   1         TH0 = TEMPO_HIGH;      // Timer 0 = 50 ms
+ 110   1         TL0 = TEMPO_LOW; 
+ 111   1         TH1 = TEMPO_T1;      // Timer 1 = 112 us
+ 112   1         TL1 = TEMPO_T1; 
+ 113   1         TempoAntesDeRedesenhar = TEMPO_1SEGUNDO;       // Inicializa vari?vel para medir 1 s
+ 114   1         IP = 0;        // N?o altera as prioridades
+ 115   1         IE = INTERRUPCOES_ESTADO_INICIAL;      // Activa as interrup??es - #10001111b:
+C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 01:09:36 PAGE 3   
 
- 117   1      
- 118   1        //inicializarJogador(); //o jogador é desenhado no DisplayY
- 119   1      
- 120   1        //Ciclo do jogo propriamente dito
- 121   1        while(vidasRestantes && tempoRestante)  //Enquanto que houver vidas restantes
- 122   1        {
- 123   2          //verificarControlos();       //verifica se é clicado para ir para a esquerda ou para a direita (fazendo o 
+ 116   1         IT0 = 1;     // Ext0 detectada na transi??o descendente
+ 117   1         IT1 = 1;     // Ext1 detectada na transi??o descendente
+ 118   1         TR0 = 1;     // Inicia timer 0
+ 119   1         TR1 = 1;     // Inicia timer 1
+ 120   1         LinhaAtual = 0;          // Indica que ? para mostrar a primeira linha
+ 121   1         Input = VAZIO;     // P3 ? uma porta de entrada
+ 122   1      }
+ 123          /////////////////////////////////////////////////////////////
+ 124          ////////////////////////////////////////////////////////////////////////////
+ 125          
+ 126          void verificarControlos(void)
+ 127          {
+ 128   1          if(!Esquerda)       //Se for clicado para ir para a esquerda
+ 129   1          {
+ 130   2      //      if(px > X_MIN)    //Se não tiver no limite esquerdo do DisplayY
+ 131   2      //        moverJogadorEsquerda(); //Anda para a esquerda
+ 132   2            while(!Esquerda) {}   //Espera o 'largar' do botão
+ 133   2          }
+ 134   1          if(!Direita)        //Se for clicado para ir para a direita
+ 135   1          {
+ 136   2      //      if(px < X_MAX)    //Se não tiver no limite direito do DisplayY
+ 137   2      //        moverJogadorDireita();  //Anda para a direita
+ 138   2            while(!Direita) {}    //Espera o 'largar' do botão
+ 139   2          }
+ 140   1      }
+ 141          
+ 142          void verificarVidasJogador(void)
+ 143          {
+ 144   1      //  if(estaLigado(px,Y_MIN+1))
+ 145   1          vidasRestantes--;
+ 146   1      }
+ 147          
+ 148          void jogar(double dificuldade)
+ 149          {
+ 150   1        vidasRestantes = VIDAS_INICIAL;   //vidas restantes do jogador é inicializada
+ 151   1        tempoRestante = TEMPO_NIVEL;
+ 152   1      
+ 153   1        //inicializarJogador(); //o jogador é desenhado no DisplayY
+ 154   1      
+ 155   1        //Ciclo do jogo propriamente dito
+ 156   1        while(vidasRestantes && tempoRestante)  //Enquanto que houver vidas restantes
+ 157   1        {
+ 158   2          //verificarControlos();       //verifica se é clicado para ir para a esquerda ou para a direita (fazendo o 
              -respetivo movimento)
- 124   2          //moverObstaculos();          //desenha novos objetos e arrasta os atuais para baixo
- 125   2          //verificarVidasJogador();    //verifica se o jogador bate num obstáculo (decrementando uma vida nesse cas
+ 159   2          //moverObstaculos();          //desenha novos objetos e arrasta os atuais para baixo
+ 160   2          //verificarVidasJogador();    //verifica se o jogador bate num obstáculo (decrementando uma vida nesse cas
              -o)
- 126   2          //delay(dificuldade);
- 127   2          //tempoRestante--;
- 128   2        }
- 129   1        
- 130   1        if(vidasRestantes)
- 131   1          return;
- 132   1        
- 133   1        //showGameOver();
- 134   1        
- 135   1      }
-*** WARNING C280 IN LINE 113 OF Jogo.c: 'dificuldade': unreferenced local variable
- 136          
- 137          void main(void)
- 138          {
- 139   1        inicializarDisplay();
- 140   1        ligarInterrupcoes();
- 141   1        
- 142   1        jogar(DIFICULDADE1);      //Nível 1 do jogo
- 143   1        jogar(DIFICULDADE2);      //Nível 2 do jogo
- 144   1        jogar(DIFICULDADE3);      //Nível 3 do jogo
- 145   1        jogar(DIFICULDADE4);      //Nível 4 do jogo
- 146   1        jogar(DIFICULDADE5);      //Nível 5 do jogo
- 147   1      
- 148   1        for(;;);
- 149   1      }
- 150          /*******************************************************************************/
+ 161   2          //delay(dificuldade);
+ 162   2          tempoRestante--;
+ 163   2        }
+ 164   1        
+ 165   1        if(vidasRestantes)
+ 166   1          return;
+ 167   1        
+ 168   1        //showGameOver();
+ 169   1        
+ 170   1      }
+*** WARNING C280 IN LINE 148 OF Jogo.c: 'dificuldade': unreferenced local variable
+ 171          
+ 172          void main(void)
+ 173          {
+ 174   1        inicializarDisplay();
+C51 COMPILER V9.56.0.0   JOGO                                                              05/23/2017 01:09:36 PAGE 4   
+
+ 175   1        ligarInterrupcoes();
+ 176   1        
+ 177   1        jogar(DIFICULDADE1);      //Nível 1 do jogo
+ 178   1        jogar(DIFICULDADE2);      //Nível 2 do jogo
+ 179   1        jogar(DIFICULDADE3);      //Nível 3 do jogo
+ 180   1        jogar(DIFICULDADE4);      //Nível 4 do jogo
+ 181   1        jogar(DIFICULDADE5);      //Nível 5 do jogo
+ 182   1      
+ 183   1        for(;;);
+ 184   1      }
+ 185          /*******************************************************************************/
 
 
 MODULE INFORMATION:   STATIC OVERLAYABLE
-   CODE SIZE        =    256    ----
+   CODE SIZE        =    311    ----
    CONSTANT SIZE    =   ----    ----
    XDATA SIZE       =   ----    ----
    PDATA SIZE       =   ----    ----
-   DATA SIZE        =     91       4
+   DATA SIZE        =     92       5
    IDATA SIZE       =   ----    ----
    BIT SIZE         =   ----    ----
 END OF MODULE INFORMATION.
 
 
-C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)
+C51 COMPILATION COMPLETE.  2 WARNING(S),  0 ERROR(S)
