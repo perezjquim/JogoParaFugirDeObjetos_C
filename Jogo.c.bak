@@ -60,43 +60,45 @@ static char ImagemY[NR_LINHAS] =
 void redesenharEcra()
 {
    int i;				
-   for (i = 0; i < NR_LINHAS - 1; i++)
+   for (i = 0; i <= 5; i++)
       ImagemX[i] = Imagens[ImagemAtual][i];
 }
 void moverObstaculos()
 {
 	int i;
 	char obstaculo;
-	for (i = NR_LINHAS - 2; i > 0 ; i--)
+	for (i = 5; i > 0 ; i--)
 			ImagemX[i] = ImagemX[i-1];
-	if(ObstaculosInicio < Y_MAX)
+	if(ObstaculosInicio < 5)
 	{
 		ImagemX[ObstaculosInicio] = 0;
 		ObstaculosInicio++;
 	}
 }
+void verificarVidasJogador(void)
+{
+	if(ImagemX[6] & ImagemX[5] != 0)
+		vidasRestantes--;
+}
+
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
 void moverJogadorEsquerda() interrupt 0
 {
-	if(ImagemX[NR_LINHAS - 1] != 16)
-	{
-		ImagemX[NR_LINHAS - 1] << 2; // shift left
-		pxJogador--;
-	}
+	if(ImagemX[6] != 16)
+		ImagemX[6] /= 2; // shift left
 }
 
 void moverJogadorDireita() interrupt 2
 {
-	if(ImagemX[NR_LINHAS - 1] != 1)
-	{
-		ImagemX[NR_LINHAS - 1] >> 1; // shift right
-		pxJogador++;
-	}
+	if(ImagemX[6] != 1)
+		ImagemX[6] *= 2; // shift right
 }
 
 void verificarObstaculos() interrupt 1
-{
+{ 
+	//verificarVidasJogador();
+	 //tempoRestante--;
    TH0 = TEMPO_HIGH;		// Timer 0 = 50 ms
    TL0 = TEMPO_LOW;		// Verifica se j? passou 1 segundo 
    TempoAntesDeRedesenhar--;			
@@ -105,7 +107,7 @@ void verificarObstaculos() interrupt 1
       TempoAntesDeRedesenhar = TEMPO_1SEGUNDO;		// Actualiza a vari?vel tempo
 			moverObstaculos();
    }
-	 tempoRestante--;
+
 }
 
 void varrerDisplay(void) interrupt 3
@@ -119,7 +121,7 @@ void varrerDisplay(void) interrupt 3
 }
 ////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////
-void inicializarDisplay()
+void inicializarObstaculos()
 {
 	 ObstaculosInicio = 0;
 	 ImagemAtual = nivel - 1;			// Imagem inicial
@@ -128,8 +130,7 @@ void inicializarDisplay()
 
 void inicializarJogador()
 {
-	ImagemX[NR_LINHAS - 1] = 4;
-	pxJogador = 2;
+	 ImagemX[6] = 4;
 }
 
 
@@ -151,26 +152,30 @@ void ligarInterrupcoes(void)
    Input = VAZIO;			// P3 ? uma porta de entrada
 }
 
-void verificarVidasJogador(void)
+void desligarInterrupcoes(void)
 {
-	if(estaLigado(px,Y_MIN+1))
-		vidasRestantes--;
+	IT0 = 0;
+	IT1 = 0;
+	TR0 = 0;
+	TR1 = 0;
 }
+
 
 void jogar(double dificuldade)
 {
 	inicializarJogador();
-	inicializarDisplay();
+	inicializarObstaculos();
 	ligarInterrupcoes();
 	
 	vidasRestantes = VIDAS_INICIAL;		//vidas restantes do jogador é inicializada
 	tempoRestante = TEMPO_NIVEL;
 
 	//Ciclo do jogo propriamente dito
-	while(vidasRestantes && tempoRestante)	//Enquanto que houver vidas restantes
-	{
-		//verificarVidasJogador();		//verifica se o jogador bate num obstáculo (decrementando uma vida nesse caso)
-	}
+	while(vidasRestantes && tempoRestante) {}
+		
+	nivel++;
+		
+	return;
 	
 	if(vidasRestantes)
 	{
