@@ -1,55 +1,68 @@
+/*	Livrarias	*/
 #include <reg51.h>
 #include <stdio.h>
 #include <stdlib.h>
+/**************/
 
+/*	Portas	*/
 sbit Input = P3;
-sbit Esquerda = P3^2;
-sbit Direita = P3^3;
 #define DisplayX P2
 #define DisplayY P1
-#define NR_LINHAS	7		// N?mero total de linhas
-#define TEMPO_HIGH	0x3c	 	// Byte mais significativo do timer 0 - 50 ms (12MHz)
-#define TEMPO_LOW	0xaf	 	// Byte menos significativo do timer 0 - 50 ms (12MHz)
-#define TEMPO_T1 0x70	   	//0x70 Tempo do timer 1 - 112 us (12MHz)
-#define NR_IMAGENS 7		// N?mero de imagens
-#define VAZIO 0xFF
-#define INTERRUPCOES_ESTADO_INICIAL 143
-#define GAMEOVER 5
-#define VICTORY 6
+/************/
 
-#define POS_JOGADOR 6
-#define POS_INICIAL 4
-#define VIDAS_INICIAL 3
-#define DIFICULDADE1 20
-#define DIFICULDADE2 18
-#define DIFICULDADE3 15
-#define DIFICULDADE4 10
-#define DIFICULDADE5 7
-#define LIMITE_X_DIREITA 1
-#define LIMITE_X_ESQUERDA 16
-#define LINHA_VAZIA 0
+/* Constantes auxiliares (microcontrolador) */
+#define TEMPO_HIGH	0x3C	 								// Byte mais significativo do timer 0 - 50 ms (12MHz)
+#define TEMPO_LOW	0xAF	 									// Byte menos significativo do timer 0 - 50 ms (12MHz)
+#define TEMPO_T1 0x70	   									// 0x70 Tempo do timer 1 - 112 us (12MHz)
+#define VAZIO 0xFF												// Porta vazia (tudo desligado)
+#define INTERRUPCOES_ESTADO_INICIAL 143		// Estado das interrupções ao ser corrido o programa
+/********************************************/
 
-char ImagemAtual;			// Vari?vel com o n?mero da imagem
-char LinhaAtual;			// Vari?vel para guardar o n?mero de linha
-char ImagemX[NR_LINHAS];	// Display com 7 valores
+/*	Constantes auxiliares (jogo)	*/
+#define GAMEOVER 5						// ID da imagem do gameover
+#define VICTORY 6							// ID da imagem da vitória
+#define NR_IMAGENS 7					// Número de imagens
+#define NR_LINHAS	7						// Número total de linhas
+#define POS_JOGADOR 6					// Coordenada Y do jogador (última linha)
+#define POS_INICIAL 4					// Posição inicial do jogador (no meio da linha)
+#define VIDAS_INICIAL 3				// Nº de vidas para o jogador (3 vidas)
+#define DIFICULDADE1 20				// Velocidade a que descem os obstáculos (dificuldade)
+#define DIFICULDADE2 18				// Velocidade a que descem os obstáculos (dificuldade)
+#define DIFICULDADE3 15 			// Velocidade a que descem os obstáculos (dificuldade)
+#define DIFICULDADE4 10 			// Velocidade a que descem os obstáculos (dificuldade)
+#define DIFICULDADE5 7  			// Velocidade a que descem os obstáculos (dificuldade)
+#define LIMITE_X_DIREITA 1		// Limite direito do display em relação ao X
+#define LIMITE_X_ESQUERDA 16	// Limite esquerdo do display em relação ao X
+#define LINHA_VAZIA 0					// Representa uma linha vazia (imagem com os LEDs todos desligados)
+/**********************************/
 
-char VidasRestantes;		//vidas restantes do jogador
-char TempoObstaculos; 			// Vari?vel para medir 1 s (20x50 ms)
-char DificuldadeAtual;
-char ObstaculosInicio;
-char NivelAtual = 1;
+/*	Variáveis do jogo	*/
+char ImagemAtual;						// Variável com o número da imagem
+char LinhaAtual;						// Variável para guardar o número de linha
+char ImagemX[NR_LINHAS];		// Display com 7 valores
 
+char VidasRestantes;				// Vidas restantes do jogador
+char TempoObstaculos; 			// Tempo (restante) antes de descerem (novamente) os obstáculos
+char DificuldadeAtual;			// Dificuldade atual do jogo (tempo estipulado para a frequência com que os obstáculos vão descendo)
+char ObstaculosInicio;			// Limite superior dos obstáculos
+char NivelAtual = 1;				// Nível atual do jogo (que representa a imagem do vetor a ser desenhada)
+/**********************/
+
+/*	Conjunto de imagens do jogo	*/
 static char Imagens[NR_IMAGENS][NR_LINHAS] = 
 {{3, 2, 1, 6, 0, 0, 4},		// Nível 1
 {4, 3, 2, 6, 0, 0, 4},		// Nível 2
 {7, 6, 2, 6, 0, 0, 4},		// Nível 3
 {8, 2, 3, 6, 0, 0, 4},		// Nível 4
 {1, 4, 4, 6, 0, 0, 4},		// Nível 5
-
 {17,10,4,10,17,0,0},      // Game over
-{31,31,31,31,31,31,31}};		// Vitória
+{31,31,31,31,31,31,31}};	// Vitória
+/********************************/
+
+/*	Vetor para ativar as linhas do display	*/
 static char ImagemY[NR_LINHAS] = 
 {254, 253, 251, 247, 239, 223, 191};
+/********************************************/
 
 void redesenharEcra()
 {
