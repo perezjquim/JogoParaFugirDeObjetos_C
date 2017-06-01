@@ -1,3 +1,8 @@
+// Projeto 3 de Arquitetura de Computadores
+// Jogo para fugir de objetos (C)
+// Manuel Joaquim Andrade Sousa Perez, 2029015
+// Cláudio Ascenso Sardinha, 2030215
+
 /*	Livrarias	*/
 #include <reg51.h>
 #include <stdio.h>
@@ -11,16 +16,16 @@ sbit Input = P3;
 /************/
 
 /* Constantes auxiliares (microcontrolador) */
-#define TEMPO_HIGH	0x3C	 								// Byte mais significativo do timer 0 - 50 ms (12MHz)
-#define TEMPO_LOW	0xAF	 									// Byte menos significativo do timer 0 - 50 ms (12MHz)
+#define TEMPO_T0_HIGH	0x3C	 								// Byte mais significativo do timer 0 - 50 ms (12MHz)
+#define TEMPO_T0_LOW	0xAF	 									// Byte menos significativo do timer 0 - 50 ms (12MHz)
 #define TEMPO_T1 0x70	   									// 0x70 Tempo do timer 1 - 112 us (12MHz)
 #define VAZIO 0xFF												// Porta vazia (tudo desligado)
-#define INTERRUPCOES_ESTADO_INICIAL 143		// Estado das interrupções ao ser corrido o programa
+#define INTERRUPCOES_SETUP 143		// Estado das interrupções ao ser corrido o programa
 /********************************************/
 
 /*	Constantes auxiliares (jogo)	*/
-#define GAMEOVER 5						// ID da ima gem do gameover
-#define VICTORY 6							// ID da imagem da vitória
+#define IMAGEM_GAMEOVER 5						// ID da imagem do gameover
+#define IMAGEM_VICTORY 6							// ID da imagem da vitória
 #define NR_IMAGENS 7					// Número de imagens
 #define NR_LINHAS	7						// Número total de linhas
 #define POS_JOGADOR 6					// Coordenada Y do jogador (última linha)
@@ -37,9 +42,8 @@ sbit Input = P3;
 /**********************************/
 
 /*	Variáveis do jogo	*/
-char ImagemAtual;						// Variável com o número da imagem
 char LinhaAtual;						// Variável para guardar o número de linha
-char ImagemX[NR_LINHAS];		// Display com 7 valores
+char ImagemDisplay[NR_LINHAS];		// Display com 7 valores
 
 char VidasRestantes;				// Vidas restantes do jogador
 char TempoObstaculos; 			// Tempo (restante) antes de descerem (novamente) os obstáculos
@@ -60,16 +64,16 @@ static char Imagens[NR_IMAGENS][NR_LINHAS - 1] =
 /********************************/
 
 /*	Vetor para ativar as linhas do display	*/
-static char ImagemY[NR_LINHAS] = 
+static char ImagemLinha[NR_LINHAS] = 
 {254, 253, 251, 247, 239, 223, 191};
 /********************************************/
 
 /* Função para desenhar uma nova imagem no ecrã	*/
-void desenharNovaImagem()
+void desenharNovaImagem(char NovaImagem)
 {
    int i;				
    for (i = 0; i < POS_JOGADOR; i++)
-      ImagemX[i] = Imagens[ImagemAtual][i];		//Atualiza a linha com a nova imagem
+      ImagemDisplay[i] = Imagens[NovaImagem][i];		//Atualiza a linha com a nova imagem
 }
 /************************************************/
 
@@ -78,10 +82,10 @@ void moverObstaculos()
 {
 	int i;
 	for (i = POS_JOGADOR - 1; i > ObstaculosInicio ; i--)			//Percorre todas as linhas
-			ImagemX[i] = ImagemX[i-1]; 							//Puxa a imagem da linha (acima) para baixo
+			ImagemDisplay[i] = ImagemDisplay[i-1]; 							//Puxa a imagem da linha (acima) para baixo
 	if(ObstaculosInicio < NR_LINHAS - 1)				//Se os obstáculos ainda não chegaram até ao fim
 	{
-		ImagemX[ObstaculosInicio] = LINHA_VAZIA;	//Apaga a "primeira" linha dos obstáculos
+		ImagemDisplay[ObstaculosInicio] = LINHA_VAZIA;	//Apaga a "primeira" linha dos obstáculos
 		ObstaculosInicio++;												//Incrementa a posição onde "começam" os obstáculos
 	}
 }
@@ -90,7 +94,7 @@ void moverObstaculos()
 /*	Função para verificar se há colisão entre o jogador e um obstáculo	*/
 void verificarColisoes(void)
 {
-	if(ImagemX[POS_JOGADOR] & ImagemX[POS_JOGADOR - 1]) //Se houver "interseção" (colisão)
+	if(ImagemDisplay[POS_JOGADOR] & ImagemDisplay[POS_JOGADOR - 1]) //Se houver "interseção" (colisão)
 		VidasRestantes--;																									 //Decrementa a quantidade de vidas restantes
 }
 /************************************************************************/
@@ -98,16 +102,16 @@ void verificarColisoes(void)
 /* Função para mover o jogador para a esquerda (quando é premido o devido botão)	*/
 void moverJogadorEsquerda() interrupt 0
 {
-	if(ImagemX[POS_JOGADOR] != LIMITE_X_ESQUERDA)	//Se não tiver encostado na borda esquerda
-		ImagemX[POS_JOGADOR] *= 2; 									//O jogador anda para a esquerda (shift left)
+	if(ImagemDisplay[POS_JOGADOR] != LIMITE_X_ESQUERDA)	//Se não tiver encostado na borda esquerda
+		ImagemDisplay[POS_JOGADOR] *= 2; 									//O jogador anda para a esquerda (shift left)
 }
-/**********************************************************************************/
+/********************************************************************6**************/
 
 /* Função para mover o jogador para a direita (quando é premido o devido botão)	*/
 void moverJogadorDireita() interrupt 2
 {
-	if(ImagemX[POS_JOGADOR] != LIMITE_X_DIREITA)	//Se não tiver encostado na borda direita
-		ImagemX[POS_JOGADOR] /= 2;									//O jogador anda para a direita (shift right)
+	if(ImagemDisplay[POS_JOGADOR] != LIMITE_X_DIREITA)	//Se não tiver encostado na borda direita
+		ImagemDisplay[POS_JOGADOR] /= 2;									//O jogador anda para a direita (shift right)
 }
 /********************************************************************************/
 
@@ -116,8 +120,8 @@ void moverJogadorDireita() interrupt 2
 void verificarObstaculos() interrupt 1
 { 
 	 // Reinicializa o timer
-   TH0 = TEMPO_HIGH;			
-   TL0 = TEMPO_LOW;
+   TH0 = TEMPO_T0_HIGH;			
+   TL0 = TEMPO_T0_LOW;
 	
    TempoObstaculos--;						// Decrementa a contagem (de 1 segundo)
 	
@@ -126,7 +130,7 @@ void verificarObstaculos() interrupt 1
    if (TempoObstaculos == 0)		
    {
 		 	verificarColisoes();							// Verifica se há colisão entre o jogador e um obstáculo
-      TempoObstaculos = DificuldadeAtual;		// Reinicializa a contagem
+			TempoObstaculos = DificuldadeAtual;		// Reinicializa a contagem
 			moverObstaculos();										// Move os obstáculos para baixo
    }
 }
@@ -136,8 +140,8 @@ void verificarObstaculos() interrupt 1
 void varrerDisplay(void) interrupt 3
 {
    DisplayY = VAZIO;								// Desliga todas as linhas de sa?da
-   DisplayX = ImagemX[LinhaAtual];	// Mostra a linha
-   DisplayY = ImagemY[LinhaAtual];	// Activa a linha
+   DisplayX = ImagemDisplay[LinhaAtual];	// Mostra a linha
+   DisplayY = ImagemLinha[LinhaAtual];	// Activa a linha
    LinhaAtual++;										// Passa para a próxima linha
 	
    if (LinhaAtual == NR_LINHAS) 		// Caso tenha chegado à ultima linha,
@@ -150,33 +154,31 @@ void varrerDisplay(void) interrupt 3
 void inicializarObstaculos()
 {
 	 ObstaculosInicio = 0;						// A "primeira" linha dos obstáculos começa no topo do display
-	 ImagemAtual = NivelAtual - 1;		// Busca a imagem do nível atual
-   desenharNovaImagem();						// Desenha a imagem do nível atual
+     desenharNovaImagem(NivelAtual - 1);						// Desenha a imagem do nível atual
 }
 /**********************************************************/
 
 /*	Função para desenhar pela primeira vez o jogador (na sua posição inicial)	*/
 void inicializarJogador()
 {
-	 ImagemX[POS_JOGADOR] = POS_JOGADOR_INICIAL;	//O jogador fica na sua posição inicial
+	 ImagemDisplay[POS_JOGADOR] = POS_JOGADOR_INICIAL;	//O jogador fica na sua posição inicial
 }
 /******************************************************************************/
 
 /*	Função para ligar as interrupções (com o estado adequado)	*/
 void ligarInterrupcoes(void)
 {
-	 TMOD = 33;													// Timer 0 de 16 bits - #00100001b
-   TH0 = TEMPO_HIGH;									// Timer 0 = 50 ms
-   TL0 = TEMPO_LOW; 
+   TMOD = 33;													// Timer 0 de 16 bits - #00100001b
+   TH0 = TEMPO_T0_HIGH;									// Timer 0 = 50 ms
+   TL0 = TEMPO_T0_LOW; 
    TH1 = TEMPO_T1;										// Timer 1 = 112 us
    TL1 = TEMPO_T1; 
    IP = 0;														// Não altera as prioridades
-   IE = INTERRUPCOES_ESTADO_INICIAL;	// Activa as interrupções - #10001111b:
+   IE = INTERRUPCOES_SETUP;	// Activa as interrupções - #10001111b:
    IT0 = 1;														// Ext0 detectada na transição descendente
    IT1 = 1;														// Ext1 detectada na transição descendente
    TR0 = 1;														// Inicia timer 0
    TR1 = 1;														// Inicia timer 1
-   LinhaAtual = 0;	     							// Indica que é para mostrar a primeira linha
    Input = VAZIO;											// Porta de entrada é limpa
 }
 /**************************************************************/
@@ -191,8 +193,7 @@ void desligarInterrupcoes(void)
 /* Função para mostrar a imagem de GameOver (quando o jogador perde todas as vidas num nível)	*/
 void gameOver()
 {
-	ImagemAtual = GAMEOVER;		//Busca a imagem do GameOver
-	desenharNovaImagem();			//Desenha essa imagem
+	desenharNovaImagem(IMAGEM_GAMEOVER);			//Desenha essa imagem
 	desligarInterrupcoes();
 	for(;;);									//Fica em loop
 }
@@ -201,8 +202,7 @@ void gameOver()
 /* Função para mostrar a imagem da vitória (quando o jogador passa com sucesso por todos os níveis)	*/
 void victory()
 {
-	ImagemAtual = VICTORY;		//Busca a imagem da vitória
-	desenharNovaImagem();			//Desenha essa imagem
+	desenharNovaImagem(IMAGEM_VICTORY);			//Desenha essa imagem
 	desligarInterrupcoes();
 	for(;;);									//Fica em loop
 }
@@ -240,6 +240,7 @@ void jogar(double dificuldade)
 /********************************************/
 void main()
 {
+	LinhaAtual = 0;	     							// Indica que é para mostrar a primeira linha
 	ligarInterrupcoes();			//Liga as interrupções
 	VidasRestantes = VIDAS_INICIAL;		//vidas restantes do jogador é inicializada
 	
