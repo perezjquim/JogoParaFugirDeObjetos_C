@@ -31,11 +31,11 @@ sbit Input = P3;
 #define POS_JOGADOR 6					// Coordenada Y do jogador (última linha)
 #define POS_JOGADOR_INICIAL 4					// Posição inicial do jogador (no meio da linha)
 #define VIDAS_INICIAL 4				// Nº de vidas para o jogador (3 vidas)
-#define DIFICULDADE1 20				// Velocidade a que descem os obstáculos (dificuldade)
-#define DIFICULDADE2 18				// Velocidade a que descem os obstáculos (dificuldade)
-#define DIFICULDADE3 15 			// Velocidade a que descem os obstáculos (dificuldade)
-#define DIFICULDADE4 10 			// Velocidade a que descem os obstáculos (dificuldade)
-#define DIFICULDADE5 7  			// Velocidade a que descem os obstáculos (dificuldade)
+#define DIFICULDADE1 5				// Velocidade a que descem os obstáculos (dificuldade)
+#define DIFICULDADE2 4				// Velocidade a que descem os obstáculos (dificuldade)
+#define DIFICULDADE3 3 			// Velocidade a que descem os obstáculos (dificuldade)
+#define DIFICULDADE4 2 			// Velocidade a que descem os obstáculos (dificuldade)
+#define DIFICULDADE5 1  			// Velocidade a que descem os obstáculos (dificuldade)
 #define LIMITE_X_DIREITA 1		// Limite direito do display em relação ao X
 #define LIMITE_X_ESQUERDA 16	// Limite esquerdo do display em relação ao X
 #define LINHA_VAZIA 0					// Representa uma linha vazia (imagem com os LEDs todos desligados)
